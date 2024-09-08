@@ -92,6 +92,8 @@ payment-service
 │   │   │   │   ├── large
 │   │   │   │   │   ├── repository
 │   │   │   │   │   │   ├── domain
+│
+├──────────────────────────────────
 ```
 
 ## Trouble Shooting
