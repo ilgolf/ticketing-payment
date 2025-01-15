@@ -16,4 +16,24 @@ interface OrderItem {
      * 상품 ID
      */
     val itemId : Long
+
+    companion object {
+        fun create(
+            id: Long,
+            orderId: Long,
+            ticketId: Long,
+        ) = OrderItemMutator(
+            orderItemId =  id,
+            orderId = orderId,
+            itemId = ticketId,
+        )
+    }
+}
+
+class OrderItemMutator(
+    override val orderItemId: Long,
+    override val orderId: Long,
+    override val itemId: Long,
+): OrderItem {
+
 }

@@ -1,0 +1,6 @@
+spring:
+  config:
+    activate:
+      on-profile: docker
+    import: file:${user.home}/ngt_project/ticketing-payment/infra/src/main/resources/application.yml
+

@@ -1,4 +1,4 @@
-package me.golf.api
+package me.golf.app
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

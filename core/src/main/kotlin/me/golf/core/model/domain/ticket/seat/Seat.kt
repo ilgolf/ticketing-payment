@@ -34,6 +34,24 @@ interface Seat {
 
     fun reserve(): Seat
     fun release(): Seat
+
+    companion object {
+        fun create(
+            id: Long,
+            row: Int,
+            floor: Int,
+            number: Int,
+            section: SeatSection,
+            isAvailable: Boolean,
+        ) =  SeatMutator(
+            id = id,
+            row = row,
+            floor = floor,
+            number = number,
+            section = section,
+            isAvailable = isAvailable,
+        )
+    }
 }
 
 class SeatMutator(

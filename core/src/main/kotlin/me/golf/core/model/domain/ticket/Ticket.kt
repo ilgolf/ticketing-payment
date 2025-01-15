@@ -45,6 +45,7 @@ interface Ticket {
     fun purchase(): Ticket
     fun cancel(): Ticket
     fun open(): Ticket
+    fun isNonPurchase(): Boolean
 
     fun mutate() = TicketMutator(
         id = this.id,
@@ -143,6 +144,10 @@ class TicketMutator(
             this.openDateTime,
             this.lastModifiedAt
         )
+    }
+
+    override fun isNonPurchase(): Boolean {
+        return this.status === TicketStatus.SOLD || this.status === TicketStatus.DISABLED
     }
 
     private fun isPurchasable(): Boolean {

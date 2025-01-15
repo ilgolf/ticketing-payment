@@ -42,18 +42,7 @@ interface Order {
     val orderItem: List<OrderItem>
 
     fun changeState(state: OrderState): Order
-
-    fun mutator(): OrderMutator {
-        return OrderMutator(
-            orderId = this.orderId,
-            amount = this.amount,
-            orderDate = this.orderDate,
-            orderState = this.orderState,
-            payment = this.payment,
-            orderItem = this.orderItem,
-            userId = this.userId,
-        )
-    }
+    fun addPayment(payment: Payment): Order
 
     companion object {
         fun create(
@@ -96,6 +85,18 @@ class OrderMutator(
             userId = this.userId,
             orderState = state,
             payment = this.payment,
+            orderItem = this.orderItem,
+        )
+    }
+
+    override fun addPayment(payment: Payment): Order {
+        return OrderMutator(
+            orderId = this.orderId,
+            amount = this.amount,
+            orderDate = this.orderDate,
+            userId = this.userId,
+            orderState = this.orderState,
+            payment = payment,
             orderItem = this.orderItem,
         )
     }

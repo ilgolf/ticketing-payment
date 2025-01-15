@@ -1,0 +1,9 @@
+package me.golf.core.repository.domain.payment
+
+import me.golf.core.model.domain.order.Order
+import me.golf.core.model.domain.payment.Payment
+
+interface PaymentRepository {
+
+    fun save(payment: Payment, order: Order): Payment
+}

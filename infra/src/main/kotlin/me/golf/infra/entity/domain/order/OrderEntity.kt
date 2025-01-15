@@ -10,7 +10,7 @@ import java.time.Instant
 @Table(name = "orders")
 class OrderEntity(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false, insertable = false, updatable = false)
     var id: Long? = null,
 

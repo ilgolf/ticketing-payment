@@ -9,7 +9,7 @@ interface Payment {
     /**
      * 결제 식별자
      */
-    val id: Long
+    val id: Long?
 
     /**
      * 총 결제 금액
@@ -44,7 +44,7 @@ interface Payment {
     companion object {
 
         fun create(
-            id: Long,
+            id: Long? = null,
             amount: BigDecimal,
             paymentMethod: PaymentMethod,
             paymentStatus: PaymentStatus,
@@ -65,7 +65,7 @@ interface Payment {
 }
 
 class PaymentMutator(
-    override val id: Long,
+    override val id: Long?,
     override val amount: BigDecimal,
     override val paymentMethod: PaymentMethod,
     override val paymentStatus: PaymentStatus,

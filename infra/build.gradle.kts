@@ -1,11 +1,14 @@
-tasks.getByName("bootJar") {
-    enabled = false
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
+plugins {
+    kotlin("plugin.jpa") version "2.0.21"
 }
 
-tasks.getByName("jar") {
-    enabled = true
-}
+val jar: Jar by tasks
+val bootJar: BootJar by tasks
 
+bootJar.enabled = false
+jar.enabled = true
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -15,6 +18,7 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation(project(":core"))
     implementation(project(":common-libs"))
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
@@ -23,5 +27,9 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:kafka")
     testImplementation("org.testcontainers:mysql")
+    testImplementation("org.testcontainers:redis")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation(gradleApi())
+    implementation(localGroovy())
 }

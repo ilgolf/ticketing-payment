@@ -1,8 +1,6 @@
 package me.golf.infra.entity.domain.payment
 
 import jakarta.persistence.*
-import me.golf.core.model.domain.payment.PaymentMethod
-import me.golf.core.model.domain.payment.PaymentStatus
 import me.golf.infra.entity.BaseEntity
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -15,7 +13,7 @@ class PaymentEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id",nullable = false)
-    val id: Long,
+    var id: Long? = null,
 
 
     @Column(name = "amount",nullable = false)

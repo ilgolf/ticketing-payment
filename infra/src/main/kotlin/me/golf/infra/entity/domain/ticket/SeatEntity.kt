@@ -1,7 +1,6 @@
 package me.golf.infra.entity.domain.ticket
 
 import jakarta.persistence.*
-import me.golf.core.model.domain.ticket.seat.SeatSection
 import me.golf.infra.entity.BaseEntity
 
 @Entity
@@ -14,7 +13,7 @@ class SeatEntity(
     val id: Long,
 
     @Column(nullable = false)
-    val row: Int,
+    val rowIndex: Int,
 
     @Column(nullable = false)
     val floor: Int,
