@@ -13,6 +13,7 @@ import me.golf.core.usecase.domain.order.usecase.CheckoutUseCase
 import me.golf.core.usecase.domain.order.usecase.message.CheckoutCompleteResponseMessage
 import me.golf.core.usecase.domain.order.usecase.message.CheckoutRequestMessage
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.*
 
@@ -24,6 +25,7 @@ class CheckoutService(
     private val paymentRepository: PaymentRepository
 ) : CheckoutUseCase {
 
+    @Transactional
     override fun checkout(message: CheckoutRequestMessage): CheckoutCompleteResponseMessage {
         val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
         val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
