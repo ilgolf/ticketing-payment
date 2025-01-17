@@ -95,5 +95,3 @@ payment-service
 │
 ├──────────────────────────────────
 ```
-
-## Trouble Shooting
