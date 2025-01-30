@@ -1,10 +1,10 @@
-package me.golf.app.api.request
+package me.golf.app.api.checkout.request
 
 import me.golf.core.model.domain.payment.PaymentMethod
 import me.golf.core.usecase.domain.order.usecase.message.CheckoutRequestMessage
 
 data class CheckoutRequest(
-    val orderId: Long,
+    val orderId: String,
     val userId: Long,
     val paymentMethod: PaymentMethodDto
 ) {

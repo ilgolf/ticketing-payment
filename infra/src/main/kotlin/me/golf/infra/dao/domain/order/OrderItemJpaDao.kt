@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface OrderItemJpaDao: JpaRepository<OrderItemEntity, Long> {
-    fun findAllByOrderId(orderId: Long): MutableList<OrderItemEntity>
+    fun findAllByOrderId(orderId: String): MutableList<OrderItemEntity>
 }

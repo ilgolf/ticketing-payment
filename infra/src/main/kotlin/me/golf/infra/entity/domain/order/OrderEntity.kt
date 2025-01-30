@@ -10,9 +10,8 @@ import java.time.Instant
 @Table(name = "orders")
 class OrderEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false, insertable = false, updatable = false)
-    var id: Long? = null,
+    var id: String,
 
     @Column(name = "amount", nullable = false)
     val amount: BigDecimal,
@@ -25,9 +24,6 @@ class OrderEntity(
 
     @Column(name = "user_id", nullable = false)
     val userId: Long,
-
-    @Column(name = "payment_id")
-    val paymentId: Long? = null,
 ): BaseEntity() {
 
     override fun equals(other: Any?): Boolean {
@@ -40,6 +36,6 @@ class OrderEntity(
     }
 
     override fun hashCode(): Int {
-        return id?.hashCode() ?: 0
+        return id.hashCode()
     }
 }

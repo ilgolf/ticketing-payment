@@ -9,8 +9,8 @@ class SeatEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
-    val id: Long,
+    @Column(name = "seat_id", insertable = false, nullable = false, updatable = false)
+    var id: Long? = null,
 
     @Column(nullable = false)
     val rowIndex: Int,

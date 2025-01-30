@@ -11,7 +11,7 @@ class OrderItemEntity(
     var id: Long? = null,
 
     @Column(nullable = false)
-    val orderId: Long,
+    val orderId: String,
 
     @Column(nullable = false)
     val ticketId: Long,

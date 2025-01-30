@@ -1,8 +1,9 @@
 package me.golf.core.usecase.domain.order.usecase.message
 
-import me.golf.core.model.domain.order.OrderState
+import java.math.BigDecimal
 
 data class CheckoutCompleteResponseMessage(
-    val orderId: Long,
-    val orderStatus: OrderState
+    val orderId: String,
+    val amount: BigDecimal,
+    val idempotentKey: String,
 )

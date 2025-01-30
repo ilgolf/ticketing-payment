@@ -30,6 +30,14 @@ class CheckoutService(
         val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
         val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
 
+        order.payment?.let {
+            return CheckoutCompleteResponseMessage(
+                order.orderId,
+                order.amount,
+                it.idempotentKey,
+            )
+        }
+
         if (tickets.isEmpty()) {
             throw IllegalArgumentException("주문 티켓이 존재하지 않습니다.")
         }
@@ -53,7 +61,8 @@ class CheckoutService(
 
         return CheckoutCompleteResponseMessage(
             order.orderId,
-            order.orderState
+            order.amount,
+            payment.idempotentKey,
         )
     }
 
@@ -61,7 +70,7 @@ class CheckoutService(
         Payment.create(
             amount = order.amount,
             userId = order.userId,
-            idempotentKey = UUID.randomUUID(),
+            idempotentKey = "",
             paymentMethod = paymentMethod,
             paymentStatus = PaymentStatus.PENDING,
             paymentDate = LocalDateTime.now(),

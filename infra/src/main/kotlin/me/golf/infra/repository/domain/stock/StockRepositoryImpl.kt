@@ -9,11 +9,11 @@ class StockRepositoryImpl(
     private val stockDao: StockDao
 ): StockRepository {
 
-    override fun reserveStock(orderId: Long, itemIds: Collection<Long>): Boolean {
+    override fun reserveStock(orderId: String, itemIds: Collection<Long>): Boolean {
         return stockDao.saveOrderReserveInfo(orderId, itemIds)
     }
 
-    override fun alreadyReserve(orderId: Long): Boolean {
+    override fun alreadyReserve(orderId: String): Boolean {
         return stockDao.existsReserveInfoByOrderId(orderId)
     }
 }

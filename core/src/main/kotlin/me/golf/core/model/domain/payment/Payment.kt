@@ -32,14 +32,16 @@ interface Payment {
     val paymentDate: LocalDateTime
 
     /**
-     * 멱등키 - 토스페이먼츠에 보낼 멱등키입니다.
+     * 멱등키 - 결제 시 중복 결제를 막기 위한 멱등키입니다.
      */
-    val idempotentKey: UUID
+    val idempotentKey: String
 
     /**
      * 결제인 ID
      */
     val userId: Long
+
+    fun addIdempotentKey(idempotentKey: String): Payment
 
     companion object {
 
@@ -49,7 +51,7 @@ interface Payment {
             paymentMethod: PaymentMethod,
             paymentStatus: PaymentStatus,
             paymentDate: LocalDateTime,
-            idempotentKey: UUID,
+            idempotentKey: String,
             userId: Long
         ) =
             PaymentMutator(
@@ -70,6 +72,19 @@ class PaymentMutator(
     override val paymentMethod: PaymentMethod,
     override val paymentStatus: PaymentStatus,
     override val paymentDate: LocalDateTime,
-    override val idempotentKey: UUID,
+    override val idempotentKey: String,
     override val userId: Long,
-): Payment
+): Payment {
+
+    override fun addIdempotentKey(idempotentKey: String): Payment {
+        return Payment.create(
+            this.id,
+            this.amount,
+            this.paymentMethod,
+            this.paymentStatus,
+            this.paymentDate,
+            idempotentKey,
+            this.userId,
+        )
+    }
+}

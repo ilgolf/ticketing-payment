@@ -10,7 +10,7 @@ interface OrderItem {
     /**
      * 주문 ID
      */
-    val orderId : Long
+    val orderId : String
 
     /**
      * 상품 ID
@@ -20,7 +20,7 @@ interface OrderItem {
     companion object {
         fun create(
             id: Long,
-            orderId: Long,
+            orderId: String,
             ticketId: Long,
         ) = OrderItemMutator(
             orderItemId =  id,
@@ -32,7 +32,7 @@ interface OrderItem {
 
 class OrderItemMutator(
     override val orderItemId: Long,
-    override val orderId: Long,
+    override val orderId: String,
     override val itemId: Long,
 ): OrderItem {
 

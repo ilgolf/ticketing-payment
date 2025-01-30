@@ -1,4 +1,4 @@
-package me.golf.infra.converter
+package me.golf.infra.entity.converter
 
 import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.order.OrderItem
@@ -7,19 +7,19 @@ import me.golf.core.model.domain.payment.Payment
 import me.golf.infra.entity.domain.order.OrderEntity
 import me.golf.infra.entity.domain.order.OrderItemEntity
 
-fun Order.toEntity(): OrderEntity {
+fun Order.toEntity(orderId: String? = null): OrderEntity {
     return OrderEntity(
+        id = orderId?: this.orderId,
         amount = this.amount,
         orderDate = this.orderDate,
         orderState = this.orderState.name,
         userId = this.userId,
-        paymentId = this.payment?.id,
     )
 }
 
 fun OrderEntity.toModel(payment: Payment? = null, orderItems: List<OrderItem>): Order =
     Order.create(
-        orderId = this.id!!,
+        orderId = this.id,
         amount = this.amount,
         orderDate = this.orderDate,
         userId = this.userId,
@@ -28,10 +28,10 @@ fun OrderEntity.toModel(payment: Payment? = null, orderItems: List<OrderItem>): 
         orderItem = orderItems,
     )
 
-fun OrderItem.toEntity() = OrderItemEntity(
+fun OrderItem.toEntity(orderId: String? = null) = OrderItemEntity(
     id = this.orderItemId,
     ticketId = this.itemId,
-    orderId = this.orderId,
+    orderId = orderId?: this.orderId,
 )
 
 fun OrderItemEntity.toModel() = OrderItem.create(

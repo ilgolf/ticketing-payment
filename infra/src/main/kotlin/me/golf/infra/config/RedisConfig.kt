@@ -34,6 +34,17 @@ class RedisConfig(
 
         return template
     }
+
+    @Bean
+    fun idGeneratorTemplate(): RedisTemplate<String, String> {
+        val template = RedisTemplate<String, String>()
+        template.connectionFactory = redisConnectionFactory()
+
+        template.keySerializer = StringRedisSerializer()
+        template.valueSerializer = StringRedisSerializer()
+
+        return template
+    }
 }
 
 internal class LongListRedisSerializer : RedisSerializer<List<Long>> {

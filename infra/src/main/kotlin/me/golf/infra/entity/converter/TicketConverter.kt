@@ -1,4 +1,4 @@
-package me.golf.infra.converter
+package me.golf.infra.entity.converter
 
 import me.golf.core.model.domain.ticket.Ticket
 import me.golf.core.model.domain.ticket.TicketStatus
@@ -7,8 +7,16 @@ import me.golf.core.model.domain.ticket.seat.SeatSection
 import me.golf.infra.entity.domain.ticket.SeatEntity
 import me.golf.infra.entity.domain.ticket.TicketEntity
 
-fun TicketEntity.toModel(seat: Seat) = Ticket.create(
+fun Ticket.toEntity() = TicketEntity(
     id = this.id,
+    seatId = this.seat.id,
+    status = this.status.name,
+    price = this.price,
+    openDateTime = this.openDateTime,
+)
+
+fun TicketEntity.toModel(seat: Seat) = Ticket.create(
+    id = this.id!!,
     seat = seat,
     status = TicketStatus.valueOf(this.status),
     price = this.price,
@@ -18,7 +26,7 @@ fun TicketEntity.toModel(seat: Seat) = Ticket.create(
 )
 
 fun SeatEntity.toModel() = Seat.create(
-    id = this.id,
+    id = this.id!!,
     row = this.rowIndex,
     floor = this.floor,
     number = this.number,

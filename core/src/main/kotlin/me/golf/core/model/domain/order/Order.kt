@@ -9,7 +9,7 @@ interface Order {
     /**
      * 주문 식별자
      */
-    val orderId: Long
+    val orderId: String
 
     /**
      * 주문 총 가격
@@ -46,7 +46,7 @@ interface Order {
 
     companion object {
         fun create(
-            orderId: Long,
+            orderId: String,
             amount: BigDecimal,
             orderDate: Instant,
             userId: Long,
@@ -68,7 +68,7 @@ interface Order {
 }
 
 class OrderMutator(
-    override val orderId: Long,
+    override val orderId: String,
     override val amount: BigDecimal,
     override val orderDate: Instant,
     override val userId: Long,

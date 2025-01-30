@@ -11,7 +11,8 @@ import java.time.LocalDateTime
 class TicketEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    @Column(name = "ticket_id", nullable = false, insertable = false, updatable = false)
+    var id: Long? = null,
 
     @Column(nullable = false)
     val seatId: Long,
