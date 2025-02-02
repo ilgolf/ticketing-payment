@@ -5,6 +5,7 @@ import me.golf.core.model.domain.order.OrderState
 import me.golf.infra.entity.BaseEntity
 import java.math.BigDecimal
 import java.time.Instant
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "orders")
@@ -17,7 +18,7 @@ class OrderEntity(
     val amount: BigDecimal,
 
     @Column(name = "orderDate", nullable = false)
-    val orderDate: Instant,
+    val orderDate: LocalDateTime,
 
     @Column(name = "state", nullable = false)
     val orderState: String,

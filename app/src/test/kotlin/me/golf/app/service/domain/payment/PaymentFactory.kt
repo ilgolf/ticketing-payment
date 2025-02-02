@@ -19,7 +19,7 @@ object PaymentFactory {
         paymentMethod: PaymentMethod = PaymentMethod.CASH,
         paymentStatus: PaymentStatus = PaymentStatus.PENDING,
         paymentDate: LocalDateTime = LocalDateTime.now(),
-        idempotentKey: UUID= UUID.randomUUID(),
+        idempotentKey: String = UUID.randomUUID().toString(),
         userId: Long = 1L,
     ): Payment {
         val fixtureMonkey = FixtureMonkey.builder()

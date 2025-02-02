@@ -1,4 +1,4 @@
-package me.golf.app.api.view
+package me.golf.app.api.view.checkout
 
 import me.golf.app.api.checkout.request.CheckoutRequest
 import me.golf.core.usecase.domain.order.usecase.CheckoutUseCase

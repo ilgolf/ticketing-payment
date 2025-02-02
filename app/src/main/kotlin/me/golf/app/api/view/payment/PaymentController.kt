@@ -1,4 +1,4 @@
-package me.golf.app.api.view
+package me.golf.app.api.view.payment
 
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping

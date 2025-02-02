@@ -3,6 +3,7 @@ package me.golf.core.model.domain.order
 import me.golf.core.model.domain.payment.Payment
 import java.math.BigDecimal
 import java.time.Instant
+import java.time.LocalDateTime
 
 interface Order {
 
@@ -19,7 +20,7 @@ interface Order {
     /**
      * 주문 날짜
      */
-    val orderDate: Instant
+    val orderDate: LocalDateTime
 
     /**
      * 주문 상태
@@ -48,7 +49,7 @@ interface Order {
         fun create(
             orderId: String,
             amount: BigDecimal,
-            orderDate: Instant,
+            orderDate: LocalDateTime,
             userId: Long,
             orderState: OrderState,
             payment: Payment?,
@@ -70,7 +71,7 @@ interface Order {
 class OrderMutator(
     override val orderId: String,
     override val amount: BigDecimal,
-    override val orderDate: Instant,
+    override val orderDate: LocalDateTime,
     override val userId: Long,
     override val orderState: OrderState,
     override val payment: Payment?,

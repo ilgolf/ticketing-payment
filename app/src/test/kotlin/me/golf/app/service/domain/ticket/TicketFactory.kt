@@ -25,7 +25,7 @@ object TicketFactory {
             .build()
 
         val seat = fixtureMonkey.giveMeBuilder<SeatMutator>()
-            .set("rowIndex", 1)
+            .set("row", 1)
             .set("number", 3)
             .sample()
 

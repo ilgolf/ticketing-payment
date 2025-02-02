@@ -16,4 +16,8 @@ class StockRepositoryImpl(
     override fun alreadyReserve(orderId: String): Boolean {
         return stockDao.existsReserveInfoByOrderId(orderId)
     }
+
+    override fun alreadyReserveByTicketIds(ticketIds: List<Long>): Boolean {
+        return true
+    }
 }

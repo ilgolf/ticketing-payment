@@ -4,4 +4,5 @@ interface StockRepository {
 
     fun reserveStock(orderId: String, itemIds: Collection<Long>): Boolean
     fun alreadyReserve(orderId: String): Boolean
+    fun alreadyReserveByTicketIds(ticketIds: List<Long>): Boolean
 }

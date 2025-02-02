@@ -8,7 +8,6 @@ import me.golf.core.usecase.domain.payment.request.PaymentRequestMessage
 import me.golf.core.usecase.domain.payment.response.PaymentResponseMessage
 import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
-import java.util.*
 
 @Service
 class PaymentService(
