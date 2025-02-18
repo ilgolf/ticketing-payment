@@ -30,6 +30,17 @@ class CheckoutService(
         val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
         val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
 
+        // 선점 한 적이 있는지 확인
+        if (stockRepository.existsReserveByOrderId(message.orderId)) {
+            stockRepository.updateTtl(message.orderId)
+        } else {
+            val reserveStock = stockRepository.reserveStock(message.orderId, tickets.map { it.id })
+
+            if (!reserveStock) {
+                throw IllegalArgumentException("상품 선점에 실패했습니다.")
+            }
+        }
+
         order.payment?.let {
             return CheckoutCompleteResponseMessage(
                 order.orderId,
@@ -46,18 +57,13 @@ class CheckoutService(
             .takeIf { it.isNotEmpty() }
             ?.let { throw IllegalArgumentException("구매할 수 없는 주문 상태입니다. 현재 상태 : ${it.size}") }
 
-        if (stockRepository.alreadyReserve(order.orderId)) {
+        if (stockRepository.alreadyReserveByTicketIds(message.orderId, tickets.map { it.id })) {
             throw IllegalArgumentException("이미 선점 중인 상품입니다.")
         }
 
         // create payment
         val payment = createPayment(order, message.paymentMethod)
         paymentRepository.save(payment, order)
-        val reserveStockResult = stockRepository.reserveStock(orderId = order.orderId, tickets.map { it.id })
-
-        if (!reserveStockResult) {
-            throw IllegalArgumentException("상품 선점에 실패했습니다.")
-        }
 
         return CheckoutCompleteResponseMessage(
             order.orderId,

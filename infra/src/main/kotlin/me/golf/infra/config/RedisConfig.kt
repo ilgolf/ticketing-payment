@@ -21,14 +21,14 @@ class RedisConfig(
     fun redisConnectionFactory() = LettuceConnectionFactory(redisHost, redisPort)
 
     @Bean
-    fun stockRedisTemplate(): RedisTemplate<String, List<Long>> {
-        val template = RedisTemplate<String, List<Long>>()
+    fun stockRedisTemplate(): RedisTemplate<String, String> {
+        val template = RedisTemplate<String, String>()
         template.connectionFactory = redisConnectionFactory()
 
         template.keySerializer = StringRedisSerializer()
-        template.valueSerializer = LongListRedisSerializer()
+        template.valueSerializer = StringRedisSerializer()
         template.hashKeySerializer = StringRedisSerializer()
-        template.hashValueSerializer = LongListRedisSerializer()
+        template.hashValueSerializer = StringRedisSerializer()
 
         template.afterPropertiesSet()
 

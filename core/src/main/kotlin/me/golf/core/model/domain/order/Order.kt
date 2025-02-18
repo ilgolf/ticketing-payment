@@ -2,7 +2,6 @@ package me.golf.core.model.domain.order
 
 import me.golf.core.model.domain.payment.Payment
 import java.math.BigDecimal
-import java.time.Instant
 import java.time.LocalDateTime
 
 interface Order {

@@ -1,6 +1,6 @@
 package me.golf.app.api.view.checkout
 
-import me.golf.app.api.checkout.request.CheckoutRequest
+import me.golf.app.api.view.checkout.request.CheckoutRequest
 import me.golf.core.usecase.domain.order.usecase.CheckoutUseCase
 import me.golf.core.usecase.domain.order.usecase.message.CheckoutCompleteResponseMessage
 import org.springframework.stereotype.Controller

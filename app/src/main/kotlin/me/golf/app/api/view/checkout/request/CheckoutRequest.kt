@@ -1,4 +1,4 @@
-package me.golf.app.api.checkout.request
+package me.golf.app.api.view.checkout.request
 
 import me.golf.core.model.domain.payment.PaymentMethod
 import me.golf.core.usecase.domain.order.usecase.message.CheckoutRequestMessage

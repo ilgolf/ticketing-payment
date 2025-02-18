@@ -1,7 +1,6 @@
 package me.golf.infra.repository.domain.order
 
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.payment.Payment
 import me.golf.core.model.domain.payment.PaymentStatus
 import me.golf.core.repository.domain.order.OrderRepository
 import me.golf.infra.dao.domain.order.OrderItemJpaDao
@@ -10,8 +9,6 @@ import me.golf.infra.dao.domain.payment.PaymentJpaDao
 import me.golf.infra.entity.converter.toEntity
 import me.golf.infra.entity.converter.toModel
 import me.golf.infra.entity.domain.order.OrderItemEntity
-import me.golf.infra.entity.domain.payment.PaymentEntity
-import me.golf.infra.generator.OrderIdGenerator
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
@@ -19,13 +16,11 @@ import org.springframework.stereotype.Repository
 class OrderRepositoryImpl(
     private val orderJpaDao: OrderJpaDao,
     private val orderItemJpaDao: OrderItemJpaDao,
-    private val paymentJpaDao: PaymentJpaDao,
-    private val orderIdGenerator: OrderIdGenerator
+    private val paymentJpaDao: PaymentJpaDao
 ) : OrderRepository {
 
     override fun save(order: Order): Order {
-        val orderId = orderIdGenerator.generateOrderId()
-        val savedOrder = orderJpaDao.save(order.toEntity(orderId))
+        val savedOrder = orderJpaDao.save(order.toEntity())
         val orderItemEntities: List<OrderItemEntity> = orderItemJpaDao.saveAll(order.orderItem.map { it.toEntity(savedOrder.id) })
         return savedOrder.toModel(orderItems = orderItemEntities.map { it.toModel() })
     }

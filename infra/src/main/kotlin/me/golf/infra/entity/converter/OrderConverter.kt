@@ -7,9 +7,9 @@ import me.golf.core.model.domain.payment.Payment
 import me.golf.infra.entity.domain.order.OrderEntity
 import me.golf.infra.entity.domain.order.OrderItemEntity
 
-fun Order.toEntity(orderId: String? = null): OrderEntity {
+fun Order.toEntity(): OrderEntity {
     return OrderEntity(
-        id = orderId?: this.orderId,
+        id = this.orderId,
         amount = this.amount,
         orderDate = this.orderDate,
         orderState = this.orderState.name,

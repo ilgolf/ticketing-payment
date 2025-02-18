@@ -6,7 +6,6 @@ import me.golf.core.model.domain.payment.PaymentStatus
 import me.golf.infra.entity.domain.payment.PaymentEntity
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.UUID
 
 data class PaymentResponse(
     val merchantId: String,
@@ -22,8 +21,8 @@ data class PaymentResponse(
     val amount: BigDecimal
 ) {
     fun toEntity(payment: Payment, orderId: String): PaymentEntity {
-        if (this.status !== "") {
-            throw IllegalArgumentException("")
+        if (this.status != "DONE") {
+            throw IllegalArgumentException("결제 실패 상태 : ${this.status}, 결제 금액 : ${this.amount}")
         }
 
         return PaymentEntity(
