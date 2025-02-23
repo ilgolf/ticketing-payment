@@ -27,6 +27,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.or
 import org.mockito.kotlin.verify
+import java.math.BigDecimal
 
 @DisplayName("주문 확인 후 : ")
 class CheckoutServiceTest {
@@ -48,7 +49,7 @@ class CheckoutServiceTest {
         sut = CheckoutService(orderRepository, ticketRepository, stockRepository, paymentRepository)
 
         orderItem = OrderItem.create(1L, "20250501-002", 1L)
-        order = OrderFactory.createOrder(orderItem)
+        order = OrderFactory.createOrder(orderItem =  orderItem, amount = BigDecimal(24000))
     }
 
     @Test
@@ -58,11 +59,11 @@ class CheckoutServiceTest {
         val requestMessage = CheckoutRequestMessage(orderId = "20240501-001", userId = 1, PaymentMethod.CASH)
         val ticket = TicketFactory.createTicket(status = TicketStatus.AVAILABLE)
         val payment = PaymentFactory.createPayment()
-        val order = OrderFactory.createOrder(orderItem)
+        val order = OrderFactory.createOrder(orderItem = orderItem, amount = ticket.price)
 
         `when`(orderRepository.findByIdAndUserId(anyString(), anyLong())).thenReturn(order)
         `when`(ticketRepository.findAllByOrderId(anyList())).thenReturn(listOf(ticket))
-        `when`(stockRepository.alreadyReserve(anyString())).thenReturn(false)
+        `when`(stockRepository.alreadyReserveByTicketIds(anyString(), anyList())).thenReturn(false)
         `when`(stockRepository.reserveStock(anyString(), anyList())).thenReturn(true)
         `when`(paymentRepository.save(any<PaymentMutator>(), any<OrderMutator>())).thenReturn(payment)
 
@@ -87,7 +88,7 @@ class CheckoutServiceTest {
 
         `when`(orderRepository.findByIdAndUserId(anyString(), anyLong())).thenReturn(order)
         `when`(ticketRepository.findAllByOrderId(anyList())).thenReturn(listOf(ticket))
-        `when`(stockRepository.alreadyReserve(anyString())).thenReturn(true)
+        `when`(stockRepository.alreadyReserveByTicketIds(anyString(), anyList())).thenReturn(true)
         `when`(stockRepository.reserveStock(anyString(), anyList())).thenReturn(true)
 
         // when

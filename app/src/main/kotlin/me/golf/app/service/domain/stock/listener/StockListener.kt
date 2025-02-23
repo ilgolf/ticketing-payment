@@ -1,5 +1,6 @@
 package me.golf.app.service.domain.stock.listener
 
+import me.golf.app.service.domain.stock.listener.dto.OrderCompleteEvent
 import me.golf.core.repository.domain.stock.StockRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
@@ -25,5 +26,3 @@ class StockListener(
         }
     }
 }
-
-data class OrderCompleteEvent(val orderId: String, val ticketIds: List<Long>)

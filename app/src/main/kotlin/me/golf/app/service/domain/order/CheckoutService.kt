@@ -27,49 +27,55 @@ class CheckoutService(
 
     @Transactional
     override fun checkout(message: CheckoutRequestMessage): CheckoutCompleteResponseMessage {
-        val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
-        val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
+        return OrderRollbackHelper.rollbackOrder(message.orderId, message.userId) {
+            val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
+            val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
 
-        // 선점 한 적이 있는지 확인
-        if (stockRepository.existsReserveByOrderId(message.orderId)) {
-            stockRepository.updateTtl(message.orderId)
-        } else {
-            val reserveStock = stockRepository.reserveStock(message.orderId, tickets.map { it.id })
+            // 선점 한 적이 있는지 확인
+            if (stockRepository.existsReserveByOrderId(message.orderId)) {
+                stockRepository.updateTtl(message.orderId)
+            } else {
+                val reserveStock = stockRepository.reserveStock(message.orderId, tickets.map { it.id })
 
-            if (!reserveStock) {
-                throw IllegalArgumentException("상품 선점에 실패했습니다.")
+                if (!reserveStock) {
+                    throw IllegalArgumentException("상품 선점에 실패했습니다.")
+                }
             }
-        }
 
-        order.payment?.let {
-            return CheckoutCompleteResponseMessage(
+            order.payment?.let {
+                return@rollbackOrder CheckoutCompleteResponseMessage(
+                    order.orderId,
+                    order.amount,
+                    it.idempotentKey,
+                )
+            }
+
+            validationTickets(tickets, message)
+
+            // create payment
+            val payment = createPayment(order, message.paymentMethod)
+            paymentRepository.save(payment, order)
+
+            return@rollbackOrder CheckoutCompleteResponseMessage(
                 order.orderId,
                 order.amount,
-                it.idempotentKey,
+                payment.idempotentKey,
             )
         }
+    }
 
+    private fun validationTickets(tickets: List<Ticket>, message: CheckoutRequestMessage) {
         if (tickets.isEmpty()) {
             throw IllegalArgumentException("주문 티켓이 존재하지 않습니다.")
         }
 
-        tickets.filter { it.isNonPurchase() }
-            .takeIf { it.isNotEmpty() }
-            ?.let { throw IllegalArgumentException("구매할 수 없는 주문 상태입니다. 현재 상태 : ${it.size}") }
+        if (tickets.any { it.isNonPurchase() }) {
+            throw IllegalArgumentException("구매할 수 없는 주문 상태입니다.")
+        }
 
         if (stockRepository.alreadyReserveByTicketIds(message.orderId, tickets.map { it.id })) {
             throw IllegalArgumentException("이미 선점 중인 상품입니다.")
         }
-
-        // create payment
-        val payment = createPayment(order, message.paymentMethod)
-        paymentRepository.save(payment, order)
-
-        return CheckoutCompleteResponseMessage(
-            order.orderId,
-            order.amount,
-            payment.idempotentKey,
-        )
     }
 
     private fun createPayment(order: Order, paymentMethod: PaymentMethod) =

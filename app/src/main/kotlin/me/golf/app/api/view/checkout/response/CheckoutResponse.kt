@@ -1,4 +1,4 @@
-package me.golf.app.api.checkout.response
+package me.golf.app.api.view.checkout.response
 
 data class CheckoutResponse(
     val orderId: String,

@@ -17,11 +17,19 @@ class StockRepositoryImpl(
         return stockDao.existsReserveInfoByOrderId(orderId, ticketIds)
     }
 
+    override fun alreadyReserveByTicketIds(ticketIds: Collection<Long>): Boolean {
+        return stockDao.existsReserveInfoByTicketIds(ticketIds)
+    }
+
     override fun existsReserveByOrderId(orderId: String): Boolean {
         return stockDao.existsReserveByOrderId(orderId)
     }
 
     override fun updateTtl(orderId: String) {
         stockDao.updateTtl(orderId, 20)
+    }
+
+    override fun cancelReserve(orderId: String) {
+        stockDao.cancel(orderId)
     }
 }

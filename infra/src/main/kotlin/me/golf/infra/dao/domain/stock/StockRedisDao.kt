@@ -7,8 +7,10 @@ import java.time.Duration
 interface StockDao {
     fun saveOrderReserveInfo(orderId: String, itemIds: Collection<Long>, ttl: Long): Boolean
     fun existsReserveInfoByOrderId(orderId: String, ticketIds: Collection<Long>): Boolean
+    fun existsReserveInfoByTicketIds(ticketIds: Collection<Long>): Boolean
     fun existsReserveByOrderId(orderId: String): Boolean
     fun updateTtl(orderId: String, ttl: Long)
+    fun cancel(orderId: String)
 }
 
 @Repository
@@ -42,12 +44,32 @@ internal class StockDaoByRedis(
         return result.isNotEmpty()
     }
 
+    override fun existsReserveInfoByTicketIds(ticketIds: Collection<Long>): Boolean {
+        val reserveTickets = stockRedisTemplate.opsForHash<String, String>().entries(RESERVATION_KEY).asSequence()
+            .map { (_, value) -> value.split(",") }
+            .flatten()
+            .map { it.toLong() }
+            .toSet()
+
+        if (reserveTickets.isEmpty()) {
+            return false
+        }
+
+        val result = ticketIds.filter { reserveTickets.contains(it) }.toList()
+
+        return result.isNotEmpty()
+    }
+
     override fun existsReserveByOrderId(orderId: String): Boolean {
         return stockRedisTemplate.opsForHash<String, String>().get(RESERVATION_KEY, orderId) != null
     }
 
     override fun updateTtl(orderId: String, ttl: Long) {
         stockRedisTemplate.expire(orderId, Duration.ofMinutes(ttl))
+    }
+
+    override fun cancel(orderId: String) {
+        stockRedisTemplate.delete(orderId)
     }
 
     companion object {
