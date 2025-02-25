@@ -33,7 +33,7 @@ class OrderService(
             throw IllegalArgumentException("주문 상품이 올바르지 않습니다.")
         }
 
-        if (stockRepository.alreadyReserveByTicketIds(ticketIds)) {
+        if (!stockRepository.alreadyReserveByTicketIds(ticketIds)) {
             throw IllegalArgumentException("이미 선점중인 상품입니다.")
         }
 

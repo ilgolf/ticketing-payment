@@ -30,7 +30,7 @@ internal class StockDaoByRedis(
     override fun existsReserveInfoByOrderId(orderId: String, ticketIds: Collection<Long>): Boolean {
         val stockInfos = stockRedisTemplate.opsForHash<String, String>().entries(RESERVATION_KEY).asSequence()
             .filter { (key, _) -> orderId != key }
-            .map { (_, value) -> value.split(",") }
+            .map { (_, value) -> value.split(",") } // List deserializer 만들면 됨
             .flatten()
             .map { it.toLong() }
             .toSet()
@@ -52,7 +52,7 @@ internal class StockDaoByRedis(
             .toSet()
 
         if (reserveTickets.isEmpty()) {
-            return false
+            return true
         }
 
         val result = ticketIds.filter { reserveTickets.contains(it) }.toList()

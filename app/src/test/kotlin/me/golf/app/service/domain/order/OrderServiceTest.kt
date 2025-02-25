@@ -48,9 +48,7 @@ class OrderServiceTest {
     fun test1() {
         // given
         val tickets = listOf(TicketFactory.createTicket(id = 1, status = TicketStatus.AVAILABLE))
-
         val orderItem = tickets.map { OrderItem.create(ticketId = it.id, orderId = orderId) }.first()
-
         val order = OrderFactory.createOrder(orderItem = orderItem, amount = tickets.sumOf { it.price })
 
         `when`(ticketRepository.findAllByOrderId(anyList())).thenReturn(tickets)

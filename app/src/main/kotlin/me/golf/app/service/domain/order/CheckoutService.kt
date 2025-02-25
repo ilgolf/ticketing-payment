@@ -1,5 +1,6 @@
 package me.golf.app.service.domain.order
 
+import me.golf.app.service.domain.stock.listener.dto.OrderFailEvent
 import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.payment.Payment
 import me.golf.core.model.domain.payment.PaymentMethod
@@ -12,6 +13,7 @@ import me.golf.core.repository.domain.stock.StockRepository
 import me.golf.core.usecase.domain.order.usecase.CheckoutUseCase
 import me.golf.core.usecase.domain.order.usecase.message.CheckoutCompleteResponseMessage
 import me.golf.core.usecase.domain.order.usecase.message.CheckoutRequestMessage
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -22,46 +24,37 @@ class CheckoutService(
     private val orderRepository: OrderRepository,
     private val ticketRepository: TicketRepository,
     private val stockRepository: StockRepository,
-    private val paymentRepository: PaymentRepository
+    private val paymentRepository: PaymentRepository,
+    private val eventPublisher: ApplicationEventPublisher
 ) : CheckoutUseCase {
 
     @Transactional
     override fun checkout(message: CheckoutRequestMessage): CheckoutCompleteResponseMessage {
-        return OrderRollbackHelper.rollbackOrder(message.orderId, message.userId) {
-            val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
-            val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
+        eventPublisher.publishEvent(OrderFailEvent(message.orderId))
 
-            // 선점 한 적이 있는지 확인
-            if (stockRepository.existsReserveByOrderId(message.orderId)) {
-                stockRepository.updateTtl(message.orderId)
-            } else {
-                val reserveStock = stockRepository.reserveStock(message.orderId, tickets.map { it.id })
+        val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
+        val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
 
-                if (!reserveStock) {
-                    throw IllegalArgumentException("상품 선점에 실패했습니다.")
-                }
+        // 선점 한 적이 있는지 확인
+        if (stockRepository.existsReserveByOrderId(message.orderId)) {
+            stockRepository.updateTtl(message.orderId)
+        } else {
+            val reserveStock = stockRepository.reserveStock(message.orderId, tickets.map { it.id })
+
+            if (!reserveStock) {
+                throw IllegalArgumentException("상품 선점에 실패했습니다.")
             }
-
-            order.payment?.let {
-                return@rollbackOrder CheckoutCompleteResponseMessage(
-                    order.orderId,
-                    order.amount,
-                    it.idempotentKey,
-                )
-            }
-
-            validationTickets(tickets, message)
-
-            // create payment
-            val payment = createPayment(order, message.paymentMethod)
-            paymentRepository.save(payment, order)
-
-            return@rollbackOrder CheckoutCompleteResponseMessage(
-                order.orderId,
-                order.amount,
-                payment.idempotentKey,
-            )
         }
+
+        order.payment?.let { return CheckoutCompleteResponseMessage(order.orderId, order.amount, it.idempotentKey) }
+
+        validationTickets(tickets, message)
+
+        // create payment
+        val payment = createPayment(order, message.paymentMethod)
+        paymentRepository.save(payment, order)
+
+        return CheckoutCompleteResponseMessage(order.orderId, order.amount, payment.idempotentKey)
     }
 
     private fun validationTickets(tickets: List<Ticket>, message: CheckoutRequestMessage) {
