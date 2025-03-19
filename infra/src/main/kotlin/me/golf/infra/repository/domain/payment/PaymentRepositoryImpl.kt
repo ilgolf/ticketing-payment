@@ -4,6 +4,7 @@ import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.payment.Payment
 import me.golf.core.repository.domain.payment.PaymentRepository
 import me.golf.infra.client.PaymentClient
+import me.golf.infra.client.response.PaymentResponse
 import me.golf.infra.dao.domain.order.OrderJpaDao
 import me.golf.infra.dao.domain.payment.PaymentJpaDao
 import me.golf.infra.entity.converter.toEntity
@@ -28,10 +29,10 @@ class PaymentRepositoryImpl(
     }
 
     override fun confirm(payment: Payment, orderId: String): Payment {
-        val paymentResult = paymentClient.payment(payment, orderId)
-        val paymentEntity = paymentResult.toEntity(payment, orderId)
+        val paymentResult: PaymentResponse = paymentClient.payment(payment, orderId)
+        val paymentMethod = paymentResult.getPaymentMethod()
 
-        return paymentEntity.toModel()
+        return payment.payment(paymentResult.approvedAt, paymentMethod)
     }
 
     override fun update(payment: Payment, orderId: String): Payment {

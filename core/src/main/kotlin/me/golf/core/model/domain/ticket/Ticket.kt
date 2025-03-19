@@ -95,7 +95,7 @@ class TicketMutator(
     }
 
     override fun purchase(): Ticket {
-        if (!isPurchasable()) {
+        if (isNonPurchase()) {
             throw IllegalArgumentException("이미 구매되었거나 구매 불가능한 티켓입니다.")
         }
 
@@ -132,7 +132,7 @@ class TicketMutator(
 
     override fun open(): Ticket {
         if (this.status !== TicketStatus.DISABLED) {
-            throw IllegalArgumentException("")
+            throw IllegalArgumentException("오픈할 수 없는 상태입니다.")
         }
 
         return TicketMutator(
@@ -148,11 +148,6 @@ class TicketMutator(
 
     override fun isNonPurchase(): Boolean {
         return this.status === TicketStatus.SOLD || this.status === TicketStatus.DISABLED
-    }
-
-    private fun isPurchasable(): Boolean {
-        val ticketStatuses = EnumSet.of(TicketStatus.AVAILABLE)
-        return this.status in ticketStatuses
     }
 
     private fun isCancelable(): Boolean {

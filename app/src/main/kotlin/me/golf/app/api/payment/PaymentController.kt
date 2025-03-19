@@ -1,5 +1,6 @@
 package me.golf.app.api.payment
 
+import jakarta.validation.Valid
 import me.golf.app.api.payment.request.PaymentRequest
 import me.golf.app.api.payment.response.PaymentResponse
 import me.golf.core.usecase.domain.payment.PaymentUseCase
@@ -19,7 +20,7 @@ internal class PaymentControllerImpl(
 ): PaymentController {
 
     @PostMapping("/payment")
-    override fun pay(@RequestBody request: PaymentRequest): ResponseEntity<PaymentResponse> {
+    override fun pay(@Valid @RequestBody request: PaymentRequest): ResponseEntity<PaymentResponse> {
         val result = useCase.payment(request.toMessage())
         return ResponseEntity.ok(PaymentResponse.of(result))
     }

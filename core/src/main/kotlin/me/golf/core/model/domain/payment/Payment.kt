@@ -41,6 +41,7 @@ interface Payment {
     val userId: Long
 
     fun addIdempotentKey(idempotentKey: String): Payment
+    fun payment(approveAt: LocalDateTime, paymentMethod: PaymentMethod): Payment
 
     companion object {
 
@@ -83,6 +84,18 @@ class PaymentMutator(
             this.paymentStatus,
             this.paymentDate,
             idempotentKey,
+            this.userId,
+        )
+    }
+
+    override fun payment(approveAt: LocalDateTime, paymentMethod: PaymentMethod): Payment {
+        return Payment.create(
+            this.id,
+            this.amount,
+            paymentMethod,
+            PaymentStatus.COMPLETE,
+            approveAt,
+            this.idempotentKey,
             this.userId,
         )
     }
