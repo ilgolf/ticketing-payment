@@ -99,11 +99,11 @@ class TicketMutator(
             throw IllegalArgumentException("이미 구매되었거나 구매 불가능한 티켓입니다.")
         }
 
-        this.seat.reserve()
+        val reservedSeat = this.seat.reserve()
 
         return TicketMutator(
             this.id,
-            this.seat,
+            reservedSeat,
             TicketStatus.SOLD,
             this.price,
             this.createdAt,
@@ -117,11 +117,11 @@ class TicketMutator(
             throw IllegalArgumentException("이미 취소된 상품이거나 판매중인 티켓이 아닙니다.")
         }
 
-        this.seat.release()
+        val releasedTicket = this.seat.release()
 
         return TicketMutator(
             this.id,
-            this.seat,
+            releasedTicket,
             TicketStatus.AVAILABLE,
             this.price,
             this.createdAt,
@@ -141,7 +141,7 @@ class TicketMutator(
             TicketStatus.AVAILABLE,
             this.price,
             this.createdAt,
-            this.openDateTime,
+            LocalDateTime.now(),
             this.lastModifiedAt
         )
     }
