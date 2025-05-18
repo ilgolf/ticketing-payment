@@ -3,15 +3,17 @@ package me.golf.infra.client
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import me.golf.core.model.domain.payment.Payment
+import me.golf.infra.client.enum.EasyPayCorpCode
 import me.golf.infra.client.request.TossPaymentRequestBody
-import me.golf.infra.client.response.PaymentResponse
-import me.golf.infra.client.response.TossPaymentErrorResponse
-import me.golf.infra.client.response.TossPaymentResponse
+import me.golf.infra.client.response.*
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpStatusCode
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
+import java.math.BigDecimal
+import java.time.LocalDateTime
 
 interface PaymentClient {
 
@@ -19,6 +21,34 @@ interface PaymentClient {
 }
 
 @Component
+@Profile("test")
+internal class DefaultPaymentClient : PaymentClient {
+    private val log = LoggerFactory.getLogger(PaymentClient::class.java)
+
+    override fun payment(payment: Payment, orderId: String): PaymentResponse {
+        log.info("Testing payment for order $orderId")
+
+        return PaymentResponse(
+            merchantId = "merchantId",
+            lastTransactionKey = "lastTransactionKey",
+            idempotentKey = "idempotentKey",
+            status = TossPaymentResultStatus.DONE,
+            requestedAt = LocalDateTime.now(),
+            approvedAt = LocalDateTime.now(),
+            easyPay = EasyPay(
+                provider = EasyPayCorpCode.TOSSPAY,
+                amount = BigDecimal(1_000_000),
+                discountAmount = BigDecimal.ZERO,
+            ),
+            secret = "secret",
+            type = "type",
+            amount = BigDecimal(1_000_000),
+        )
+    }
+}
+
+@Component
+@Profile("!test")
 internal class TossPaymentClient(
     private val tossPaymentRestClient: RestClient,
     private val objectMapper: ObjectMapper,
@@ -43,11 +73,11 @@ internal class TossPaymentClient(
                 val errorResponse = response.body.use { objectMapper.readValue(it, TossPaymentErrorResponse::class.java) }
                 throw IllegalStateException(errorResponse.code.message)
             }
-            .body<String>() ?: throw IllegalArgumentException("fail payment")
+            .body<TossPaymentResponse>() ?: throw IllegalArgumentException("fail payment")
 
         log.info("response: $response")
 
-        return objectMapper.readValue<TossPaymentResponse>(response).toResponse()
+        return response.toResponse()
     }
 
     companion object {

@@ -9,10 +9,4 @@ INSERT INTO ticketing.ticket (price, open_date_time, seat_id, status) VALUES (10
 INSERT INTO ticketing.ticket (price, open_date_time, seat_id, status) VALUES (100000.00, '2025-01-29 11:59:58.000000', 2, 'AVAILABLE');
 INSERT INTO ticketing.ticket (price, open_date_time, seat_id, status) VALUES (100000.00, '2025-01-29 11:59:59.000000', 3, 'AVAILABLE');
 INSERT INTO ticketing.ticket (price, open_date_time, seat_id, status) VALUES (100000.00, '2025-01-29 12:00:01.000000', 4, 'AVAILABLE');
-# order
-INSERT INTO ticketing.orders (amount, order_date, user_id, order_id, state) VALUES (200000.00, '2025-01-30 13:06:02.000000', 1, '20250130-0002', 'TRY_ORDER');
-
-# order - ticket bridge
-INSERT INTO ticketing.order_item_entity (ticket_id, order_id) VALUES (1, '20250130-0002');
-INSERT INTO ticketing.order_item_entity (ticket_id, order_id) VALUES (2, '20250130-0002');
 

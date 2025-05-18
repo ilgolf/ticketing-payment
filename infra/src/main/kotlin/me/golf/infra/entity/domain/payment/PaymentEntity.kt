@@ -1,6 +1,8 @@
 package me.golf.infra.entity.domain.payment
 
 import jakarta.persistence.*
+import me.golf.core.model.domain.payment.PaymentMethod
+import me.golf.core.model.domain.payment.PaymentStatus
 import me.golf.infra.entity.BaseEntity
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -18,13 +20,15 @@ class PaymentEntity(
     val amount: BigDecimal,
 
     @Column(name = "payment_method",nullable = false)
-    val paymentMethod: String,
+    @Enumerated(EnumType.STRING)
+    val paymentMethod: PaymentMethod,
 
     @Column(name = "order_id",nullable = false)
     val orderId: String,
 
     @Column(name = "payment_status",nullable = false)
-    val paymentStatus: String,
+    @Enumerated(EnumType.STRING)
+    val paymentStatus: PaymentStatus,
 
     @Column(name = "payment_date",nullable = false)
     val paymentDate: LocalDateTime,

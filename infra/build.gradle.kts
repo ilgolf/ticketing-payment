@@ -30,6 +30,4 @@ dependencies {
     testImplementation("org.testcontainers:redis")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation(gradleApi())
-    implementation(localGroovy())
 }

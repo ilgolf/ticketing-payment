@@ -52,7 +52,7 @@ internal class StockDaoByRedis(
             .toSet()
 
         if (reserveTickets.isEmpty()) {
-            return true
+            return false
         }
 
         val result = ticketIds.filter { reserveTickets.contains(it) }.toList()
@@ -69,7 +69,7 @@ internal class StockDaoByRedis(
     }
 
     override fun cancel(orderId: String) {
-        stockRedisTemplate.delete(orderId)
+        stockRedisTemplate.opsForHash<String, String>().delete(RESERVATION_KEY, orderId)
     }
 
     companion object {

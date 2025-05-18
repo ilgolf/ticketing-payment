@@ -53,7 +53,6 @@ class OrderServiceTest {
 
         `when`(ticketRepository.findAllByOrderId(anyList())).thenReturn(tickets)
         `when`(orderIdGenerator.generateOrderId()).thenReturn(orderId)
-        `when`(stockRepository.alreadyReserveByTicketIds(anyString(), anyList())).thenReturn(false)
         `when`(orderRepository.save(any())).thenReturn(order)
 
         // when

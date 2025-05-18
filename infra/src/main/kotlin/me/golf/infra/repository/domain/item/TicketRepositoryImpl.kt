@@ -3,8 +3,8 @@ package me.golf.infra.repository.domain.item
 import me.golf.core.model.domain.ticket.Ticket
 import me.golf.core.repository.domain.item.TicketRepository
 import me.golf.infra.entity.converter.toModel
-import me.golf.infra.dao.domain.item.SeatJpaDao
-import me.golf.infra.dao.domain.item.TicketJpaDao
+import me.golf.infra.dao.domain.ticket.SeatJpaDao
+import me.golf.infra.dao.domain.ticket.TicketJpaDao
 import me.golf.infra.entity.converter.toEntity
 import me.golf.infra.entity.domain.ticket.TicketEntity
 import org.springframework.stereotype.Repository

@@ -35,6 +35,8 @@ class CheckoutService(
         val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
         val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
 
+        validationTickets(tickets, message)
+
         // 선점 한 적이 있는지 확인
         if (stockRepository.existsReserveByOrderId(message.orderId)) {
             stockRepository.updateTtl(message.orderId)
@@ -47,8 +49,6 @@ class CheckoutService(
         }
 
         order.payment?.let { return CheckoutCompleteResponseMessage(order.orderId, order.amount, it.idempotentKey) }
-
-        validationTickets(tickets, message)
 
         // create payment
         val payment = createPayment(order, message.paymentMethod)

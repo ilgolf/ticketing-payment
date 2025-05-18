@@ -1,4 +1,4 @@
-package me.golf.infra.dao.domain.item
+package me.golf.infra.dao.domain.ticket
 
 import me.golf.infra.entity.domain.ticket.SeatEntity
 import org.springframework.data.jpa.repository.JpaRepository

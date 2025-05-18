@@ -1,9 +1,12 @@
 spring:
+  config:
+    activate:
+      on-profile: docker
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:mysql://localhost:3306/ticketing
+    username: golf
+    password: 1234
   jpa:
     hibernate:
       ddl-auto: create
@@ -16,6 +19,17 @@ spring:
     redis:
       host: localhost
       port: 6379
-  config:
-    activate:
-      on-profile: docker
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      bootstrap-servers: localhost:9093
+      properties:
+        security.protocol: PLAINTEXT
+        # 클라이언트 설정 세부화
+        max.block.ms: 5000                 # 메타데이터 요청 타임아웃
+        reconnect.backoff.ms: 1000         # 재연결 시도 간격
+        reconnect.backoff.max.ms: 10000    # 최대 재연결 시도 간격
+        retry.backoff.ms: 1000             # 재시도 간격
+        request.timeout.ms: 30000          # 요청 타임아웃
+        connections.max.idle.ms: 540000    # 연결 유지 시간

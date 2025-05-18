@@ -135,7 +135,7 @@ class TicketTest {
         val givenTicket = TicketFactory.create(status = TicketStatus.AVAILABLE, seat = seat)
 
         // when
-        val result = catchThrowable { givenTicket.purchase() }
+        val result = catchThrowable { givenTicket.cancel() }
 
         // then
         assertThat(result).isInstanceOf(IllegalArgumentException::class.java)
