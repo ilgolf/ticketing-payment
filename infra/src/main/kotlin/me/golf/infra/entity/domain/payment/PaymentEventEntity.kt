@@ -13,17 +13,17 @@ import java.time.LocalDateTime
 class PaymentEventEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val eventId: Long?,
-    @Column(name = "paymentId", nullable = true)
+    var eventId: Long?,
+    @Column(name = "paymentId", nullable = false)
     val paymentId: Long,
-    @Column(name = "eventType", nullable = true)
+    @Column(name = "eventType", nullable = false)
     val eventType: PaymentEventType,
-    @Column(name = "eventStatus", nullable = true)
+    @Column(name = "eventStatus", nullable = false)
     val eventStatus: EventStatus,
-    @Column(name = "occurredAt", nullable = true)
+    @Column(name = "occurredAt", nullable = false)
     val occurredAt: LocalDateTime,
-    @Column(name = "processedAt")
+    @Column(name = "processedAt", nullable = true)
     val processedAt: LocalDateTime?,
-    @Column(name = "errorMessage")
+    @Column(name = "errorMessage", nullable = true)
     val errorMessage: String?,
 )

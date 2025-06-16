@@ -1,8 +1,6 @@
 package me.golf.infra.dao.domain.payment
 
-import me.golf.core.model.domain.payment.PaymentEvent
+import me.golf.infra.entity.domain.payment.PaymentEventEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface PaymentEventJpaDao: JpaRepository<PaymentEvent, Long> {
-
-}
+interface PaymentEventJpaDao: JpaRepository<PaymentEventEntity, Long>

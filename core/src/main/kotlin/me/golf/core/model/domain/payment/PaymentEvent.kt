@@ -37,13 +37,13 @@ interface PaymentEvent {
 }
 
 class PaymentEventMutator(
-    override val eventId: Long?,
-    override val paymentId: Long,
-    override val eventType: PaymentEventType,
-    override val eventStatus: EventStatus,
-    override val occurredAt: LocalDateTime,
-    override val processedAt: LocalDateTime?,
-    override val errorMessage: String?,
+    override var eventId: Long?,
+    override var paymentId: Long,
+    override var eventType: PaymentEventType,
+    override var eventStatus: EventStatus,
+    override var occurredAt: LocalDateTime,
+    override var processedAt: LocalDateTime?,
+    override var errorMessage: String?,
 ) : PaymentEvent
 
 
