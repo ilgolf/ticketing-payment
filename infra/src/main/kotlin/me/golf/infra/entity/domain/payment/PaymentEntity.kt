@@ -1,8 +1,8 @@
 package me.golf.infra.entity.domain.payment
 
 import jakarta.persistence.*
-import me.golf.core.model.domain.payment.PaymentMethod
-import me.golf.core.model.domain.payment.PaymentStatus
+import me.golf.core.model.domain.payment.enumerate.PaymentMethod
+import me.golf.core.model.domain.payment.enumerate.PaymentStatus
 import me.golf.infra.entity.BaseEntity
 import java.math.BigDecimal
 import java.time.LocalDateTime

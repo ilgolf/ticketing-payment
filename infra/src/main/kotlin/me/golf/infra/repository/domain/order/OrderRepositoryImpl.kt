@@ -1,7 +1,7 @@
 package me.golf.infra.repository.domain.order
 
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.payment.PaymentStatus
+import me.golf.core.model.domain.payment.enumerate.PaymentStatus
 import me.golf.core.repository.domain.order.OrderRepository
 import me.golf.infra.dao.domain.order.OrderItemJpaDao
 import me.golf.infra.dao.domain.order.OrderJpaDao

@@ -1,6 +1,6 @@
 package me.golf.infra.client.response
 
-import me.golf.core.model.domain.payment.PaymentMethod
+import me.golf.core.model.domain.payment.enumerate.PaymentMethod
 import java.math.BigDecimal
 import java.time.LocalDateTime
 

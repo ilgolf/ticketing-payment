@@ -1,4 +1,4 @@
-package me.golf.core.model.domain.payment
+package me.golf.core.model.domain.payment.enumerate
 
 enum class PaymentStatus(
     val serializable: String,
