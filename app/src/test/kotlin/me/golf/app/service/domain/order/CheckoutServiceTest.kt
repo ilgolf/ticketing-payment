@@ -6,7 +6,7 @@ import me.golf.app.service.domain.ticket.TicketFactory
 import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.order.OrderItem
 import me.golf.core.model.domain.order.OrderMutator
-import me.golf.core.model.domain.payment.PaymentMethod
+import me.golf.core.model.domain.payment.enumerate.PaymentMethod
 import me.golf.core.model.domain.payment.PaymentMutator
 import me.golf.core.model.domain.ticket.TicketStatus
 import me.golf.core.repository.domain.item.TicketRepository
@@ -25,8 +25,8 @@ import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.or
 import org.mockito.kotlin.verify
+import org.springframework.context.ApplicationEventPublisher
 import java.math.BigDecimal
 
 @DisplayName("주문 확인 후 : ")
@@ -37,6 +37,7 @@ class CheckoutServiceTest {
     private lateinit var ticketRepository: TicketRepository
     private lateinit var stockRepository: StockRepository
     private lateinit var paymentRepository: PaymentRepository
+    private lateinit var eventPublisher: ApplicationEventPublisher
     private lateinit var order: Order
     private lateinit var orderItem: OrderItem
 
@@ -46,7 +47,8 @@ class CheckoutServiceTest {
         ticketRepository = mock<TicketRepository>()
         stockRepository = mock<StockRepository>()
         paymentRepository = mock<PaymentRepository>()
-        sut = CheckoutService(orderRepository, ticketRepository, stockRepository, paymentRepository)
+        eventPublisher = mock<ApplicationEventPublisher>()
+        sut = CheckoutService(orderRepository, ticketRepository, stockRepository, paymentRepository, eventPublisher)
 
         orderItem = OrderItem.create(1L, "20250501-002", 1L)
         order = OrderFactory.createOrder(orderItem =  orderItem, amount = BigDecimal(24000))
@@ -63,7 +65,6 @@ class CheckoutServiceTest {
 
         `when`(orderRepository.findByIdAndUserId(anyString(), anyLong())).thenReturn(order)
         `when`(ticketRepository.findAllByOrderId(anyList())).thenReturn(listOf(ticket))
-        `when`(stockRepository.alreadyReserveByTicketIds(anyString(), anyList())).thenReturn(false)
         `when`(stockRepository.reserveStock(anyString(), anyList())).thenReturn(true)
         `when`(paymentRepository.save(any<PaymentMutator>(), any<OrderMutator>())).thenReturn(payment)
 
@@ -88,16 +89,14 @@ class CheckoutServiceTest {
 
         `when`(orderRepository.findByIdAndUserId(anyString(), anyLong())).thenReturn(order)
         `when`(ticketRepository.findAllByOrderId(anyList())).thenReturn(listOf(ticket))
-        `when`(stockRepository.alreadyReserveByTicketIds(anyString(), anyList())).thenReturn(true)
         `when`(stockRepository.reserveStock(anyString(), anyList())).thenReturn(true)
+        `when`(stockRepository.alreadyReserveByTicketIds(any(), anyList())).thenReturn(true)
 
         // when
         val exception: Throwable = catchThrowable { sut.checkout(requestMessage) }
 
         // then
-        assertAll(
-            { assertThat(exception).isExactlyInstanceOf(IllegalArgumentException::class.java) },
-        )
+        assertThat(exception).isExactlyInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test

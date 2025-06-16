@@ -10,13 +10,11 @@ services:
       - "8080:8080"
     depends_on:
       - db
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ticketing
-      SPRING_DATASOURCE_USERNAME: golf
-      SPRING_DATASOURCE_PASSWORD: 1234
+      - kafka
 
   redis:
     image: redis:7-alpine
+    hostname: redis
     ports:
       - "6379:6379"
     volumes:
@@ -25,6 +23,7 @@ services:
 
   db:
     image: mysql:8.0
+    hostname: mysql
     ports:
       - "3306:3306"
     environment:
@@ -34,6 +33,51 @@ services:
       MYSQL_PASSWORD: 1234
     volumes:
       - db_data:/var/lib/mysql
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"   # 내부(브로커 간 통신)용
+      - "9093:9093"   # 외부(호스트 접속)용
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      # 실제로 바인딩할 리스너 (포트 분리)
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:9093
+
+      # 클라이언트에게 알릴 주소·포트
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8989:8080"
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+
+networks:
+  golf:
+    external: true
 
 volumes:
   db_data:

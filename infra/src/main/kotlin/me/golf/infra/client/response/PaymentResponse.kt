@@ -1,6 +1,6 @@
 package me.golf.infra.client.response
 
-import me.golf.core.model.domain.payment.PaymentMethod
+import me.golf.core.model.domain.payment.enumerate.PaymentMethod
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -11,10 +11,10 @@ data class PaymentResponse(
     val status: TossPaymentResultStatus,
     val requestedAt: LocalDateTime,
     val approvedAt: LocalDateTime,
-    val cardInfo: Card?,
-    val virtualAccountInfo: VirtualAccount?,
-    val easyPay: EasyPay?,
-    val secret: String?,
+    val cardInfo: Card? = null,
+    val virtualAccountInfo: VirtualAccount? = null,
+    val easyPay: EasyPay? = null,
+    val secret: String? = null,
     val type: String,
     val amount: BigDecimal
 ) {

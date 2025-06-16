@@ -6,8 +6,8 @@ import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.order.OrderItem
 import me.golf.core.model.domain.order.OrderState
 import me.golf.core.model.domain.payment.Payment
-import me.golf.core.model.domain.payment.PaymentMethod
-import me.golf.core.model.domain.payment.PaymentStatus
+import me.golf.core.model.domain.payment.enumerate.PaymentMethod
+import me.golf.core.model.domain.payment.enumerate.PaymentStatus
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

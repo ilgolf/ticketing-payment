@@ -5,6 +5,6 @@ spring:
     import: file:${user.home}/ngt_project/ticketing-payment/infra/src/main/resources/application.yml
 
 toss:
-  secret-key: ${PAYMENT_SECRET_KEY}
+  secret-key: dGVzdF9nc2tfZG9jc19PYVB6OEw1S2RtUVhrelJ6M3k0N0JNdzY6Cg==
   host: https://api.tosspayments.com
 

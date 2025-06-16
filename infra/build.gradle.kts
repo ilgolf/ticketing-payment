@@ -24,12 +24,11 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:1.1.5")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:kafka")
     testImplementation("org.testcontainers:mysql")
     testImplementation("org.testcontainers:redis")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation(gradleApi())
-    implementation(localGroovy())
 }

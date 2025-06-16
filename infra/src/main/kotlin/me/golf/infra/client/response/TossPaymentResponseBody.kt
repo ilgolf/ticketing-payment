@@ -35,20 +35,21 @@ data class TossPaymentResponse(
             merchantId = this.mId,
             lastTransactionKey = this.lastTransactionKey,
             idempotentKey = this.paymentKey,
-            status = this.status,
+            status = TossPaymentResultStatus.valueOf(this.status),
             requestedAt = this.requestedAt,
             approvedAt = this.approvedAt,
             cardInfo = this.card,
             virtualAccountInfo = this.virtualAccount,
             secret = this.secret,
             type = this.type,
+            easyPay = null,
             amount = this.totalAmount,
         )
 }
 
 internal class ZonedDateTimeToLocalDateTimeDeserializer : JsonDeserializer<LocalDateTime>() {
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LocalDateTime {
-        val offsetDateTime = OffsetDateTime.parse(p.text) // ✅ OffsetDateTime으로 변환
-        return offsetDateTime.toLocalDateTime() // ✅ 시간대 제거 후 LocalDateTime 반환
+        val offsetDateTime = OffsetDateTime.parse(p.text)
+        return offsetDateTime.toLocalDateTime()
     }
 }

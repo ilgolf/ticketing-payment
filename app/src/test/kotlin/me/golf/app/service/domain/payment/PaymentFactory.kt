@@ -4,9 +4,9 @@ import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import me.golf.core.model.domain.payment.Payment
-import me.golf.core.model.domain.payment.PaymentMethod
+import me.golf.core.model.domain.payment.enumerate.PaymentMethod
 import me.golf.core.model.domain.payment.PaymentMutator
-import me.golf.core.model.domain.payment.PaymentStatus
+import me.golf.core.model.domain.payment.enumerate.PaymentStatus
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*

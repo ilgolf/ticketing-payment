@@ -1,5 +1,7 @@
 package me.golf.core.model.domain.payment
 
+import me.golf.core.model.domain.payment.enumerate.PaymentMethod
+import me.golf.core.model.domain.payment.enumerate.PaymentStatus
 import java.math.BigDecimal
 import java.time.LocalDateTime
 

@@ -3,8 +3,8 @@ package me.golf.app.service.domain.order
 import me.golf.app.service.domain.stock.listener.dto.OrderFailEvent
 import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.payment.Payment
-import me.golf.core.model.domain.payment.PaymentMethod
-import me.golf.core.model.domain.payment.PaymentStatus
+import me.golf.core.model.domain.payment.enumerate.PaymentMethod
+import me.golf.core.model.domain.payment.enumerate.PaymentStatus
 import me.golf.core.model.domain.ticket.Ticket
 import me.golf.core.repository.domain.item.TicketRepository
 import me.golf.core.repository.domain.order.OrderRepository
@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.*
 
 @Service
 class CheckoutService(
@@ -35,6 +34,8 @@ class CheckoutService(
         val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
         val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
 
+        validationTickets(tickets, message)
+
         // 선점 한 적이 있는지 확인
         if (stockRepository.existsReserveByOrderId(message.orderId)) {
             stockRepository.updateTtl(message.orderId)
@@ -47,8 +48,6 @@ class CheckoutService(
         }
 
         order.payment?.let { return CheckoutCompleteResponseMessage(order.orderId, order.amount, it.idempotentKey) }
-
-        validationTickets(tickets, message)
 
         // create payment
         val payment = createPayment(order, message.paymentMethod)

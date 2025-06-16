@@ -1,7 +1,7 @@
 package me.golf.infra.repository.domain.order
 
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.payment.PaymentStatus
+import me.golf.core.model.domain.payment.enumerate.PaymentStatus
 import me.golf.core.repository.domain.order.OrderRepository
 import me.golf.infra.dao.domain.order.OrderItemJpaDao
 import me.golf.infra.dao.domain.order.OrderJpaDao
@@ -30,17 +30,17 @@ class OrderRepositoryImpl(
             ?: throw IllegalArgumentException("Order with id=$orderId does not exist")
 
         val orderItems = orderItemJpaDao.findAllByOrderId(orderId)
-        val payment = paymentJpaDao.findByOrderIdAndPaymentStatus(order.id, PaymentStatus.PENDING.name)
+        val payment = paymentJpaDao.findByOrderIdAndPaymentStatus(order.id, PaymentStatus.PENDING)
 
         return order.toModel(payment = payment?.toModel(), orderItems = orderItems.map { it.toModel() })
     }
 
-    override fun findWithPaymentById(id: String): Order? {
+    override fun findWithPaymentById(id: String): Order {
         val orderEntity = orderJpaDao.findByIdOrNull(id)
             ?: throw IllegalArgumentException("Order with id=$id does not exist")
 
         val orderItems = orderItemJpaDao.findAllByOrderId(id)
-        val paymentEntity = paymentJpaDao.findByOrderIdAndPaymentStatus(orderEntity.id, PaymentStatus.PENDING.name)
+        val paymentEntity = paymentJpaDao.findByOrderIdAndPaymentStatus(orderEntity.id, PaymentStatus.PENDING)
             ?: throw IllegalArgumentException("Payment with id=$id does not exist")
 
         val payment = paymentEntity.toModel()

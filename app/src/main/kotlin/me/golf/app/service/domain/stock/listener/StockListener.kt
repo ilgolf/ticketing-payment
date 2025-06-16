@@ -2,6 +2,7 @@ package me.golf.app.service.domain.stock.listener
 
 import me.golf.app.service.domain.stock.listener.dto.OrderCompleteEvent
 import me.golf.app.service.domain.stock.listener.dto.OrderFailEvent
+import me.golf.app.service.domain.stock.listener.dto.PaymentSuccessEvent
 import me.golf.core.repository.domain.stock.StockRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
@@ -27,6 +28,18 @@ class StockListener(
 
         result.onFailure {
             log.error("주문 ID : {}, 선점 실패 사유 : {}", event.orderId, it.message)
+        }
+    }
+
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    fun handlePaymentSuccessEvent(event: PaymentSuccessEvent) {
+        log.info("결제 성공 선점 해제 시작: {}", event.orderId)
+        val result = kotlin.runCatching { stockRepository.cancelReserve(event.orderId) }
+
+        result.onFailure {
+            log.error("주문 ID : {} 선점 종료 실패 사유 : {}", event.orderId, it.message)
         }
     }
 

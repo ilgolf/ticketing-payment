@@ -8,5 +8,5 @@ interface OrderRepository {
 
     fun findByIdAndUserId(orderId: String, userId: Long): Order
 
-    fun findWithPaymentById(id: String): Order?
+    fun findWithPaymentById(id: String): Order
 }
