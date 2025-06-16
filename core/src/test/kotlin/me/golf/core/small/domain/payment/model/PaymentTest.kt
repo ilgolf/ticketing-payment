@@ -1,8 +1,8 @@
 package me.golf.core.small.domain.payment.model
 
 import io.kotest.matchers.shouldBe
-import me.golf.core.model.domain.payment.PaymentMethod
-import me.golf.core.model.domain.payment.PaymentStatus
+import me.golf.core.model.domain.payment.enumerate.PaymentMethod
+import me.golf.core.model.domain.payment.enumerate.PaymentStatus
 import me.golf.core.small.domain.payment.PaymentFactory
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

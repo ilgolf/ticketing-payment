@@ -1,4 +1,4 @@
-package me.golf.app.service.domain.payment
+package me.golf.infra.medium.util
 
 import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
