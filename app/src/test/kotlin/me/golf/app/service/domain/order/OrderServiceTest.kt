@@ -44,7 +44,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("선점이 안되어있거나 이미 팔린 티켓이 아나라면 티켓을 구매할 수 있습니다.")
+    @DisplayName("선점이 안되어있거나 이미 팔린 티켓이 아니라면 티켓을 구매할 수 있습니다.")
     fun test1() {
         // given
         val tickets = listOf(TicketFactory.createTicket(id = 1, status = TicketStatus.AVAILABLE))
