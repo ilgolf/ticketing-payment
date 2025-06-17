@@ -3,7 +3,7 @@ package me.golf.app.api.payment.request
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import me.golf.core.usecase.domain.payment.request.PaymentRequestMessage
-import org.jetbrains.annotations.NotNull
+import jakarta.validation.constraints.NotNull
 import java.math.BigDecimal
 
 data class PaymentRequest(

@@ -1,6 +1,6 @@
 package me.golf.app.api.order.request
 
-import org.jetbrains.annotations.NotNull
+import jakarta.validation.constraints.NotNull
 
 data class CreateOrderRequest(
 
