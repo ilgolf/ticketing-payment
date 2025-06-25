@@ -34,7 +34,7 @@ class WalletListener(
         paymentEventRepository.save(paymentEvent)
         sendWalletMessage(event)
     }
-    
+
     private fun sendWalletMessage(event: WalletEventMessage) {
         val traceId: UUID = UUID.randomUUID()
         log.info("정산 정보 입력 메시지 전송 시작 paymentId: {}, traceId: {}", event.paymentId, traceId)

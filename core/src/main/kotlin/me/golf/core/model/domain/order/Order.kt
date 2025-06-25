@@ -1,6 +1,7 @@
 package me.golf.core.model.domain.order
 
 import me.golf.core.model.domain.payment.Payment
+import me.golf.core.model.domain.ticket.Ticket
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -62,6 +63,18 @@ interface Order {
                 orderState,
                 payment,
                 orderItem,
+            )
+        }
+
+        fun order(orderId: String, userId: Long, tickets: List<Ticket>): Order {
+            return create(
+                orderId = orderId,
+                amount = tickets.sumOf { it.price },
+                orderDate = LocalDateTime.now(),
+                userId = userId,
+                orderState = OrderState.TRY_ORDER,
+                payment = null,
+                orderItem = tickets.map { OrderItem.create(ticketId = it.id, orderId = orderId) },
             )
         }
     }

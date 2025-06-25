@@ -29,6 +29,18 @@ class OrderService(
     override fun order(ticketIds: List<Long>, userId: Long): CreateOrderResponseMessage {
         val tickets: List<Ticket> = ticketRepository.findAllByOrderId(ticketIds)
 
+        validateItemStatus(tickets, ticketIds)
+
+        val orderId = orderIdGenerator.generateOrderId()
+        val order = Order.order(orderId, userId, tickets)
+
+        // 선점 이벤트 시작
+        eventPublisher.publishEvent(OrderCompleteEvent(orderId, ticketIds))
+
+        return CreateOrderResponseMessage.from(orderRepository.save(order))
+    }
+
+    private fun validateItemStatus(tickets: List<Ticket>, ticketIds: List<Long>) {
         if (tickets.size != ticketIds.size) {
             throw IllegalArgumentException("주문 상품이 올바르지 않습니다.")
         }
@@ -37,27 +49,8 @@ class OrderService(
             throw IllegalArgumentException("이미 선점중인 상품입니다.")
         }
 
-        if (tickets.any { it.isNonPurchase() })  {
+        if (tickets.any { it.isNonPurchase() }) {
             throw IllegalArgumentException("이미 구입 된 상품입니다.")
         }
-
-        val orderId = orderIdGenerator.generateOrderId()
-
-        val order = Order.create(
-            orderId = orderId,
-            amount = tickets.sumOf { it.price },
-            orderDate = LocalDateTime.now(),
-            userId = userId,
-            orderState = OrderState.TRY_ORDER,
-            payment = null,
-            orderItem = tickets.map { OrderItem.create(ticketId = it.id, orderId = orderId) },
-        )
-
-        // 선점
-        eventPublisher.publishEvent(OrderCompleteEvent(orderId, ticketIds))
-
-        val savedOrder = orderRepository.save(order)
-
-        return CreateOrderResponseMessage(savedOrder.orderId, savedOrder.amount)
     }
 }
