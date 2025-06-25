@@ -3,8 +3,11 @@ package me.golf.infra.medium;
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.KafkaContainer
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.utility.DockerImageName
+import java.time.Duration
 
 abstract class TestContainer {
 
@@ -16,6 +19,13 @@ abstract class TestContainer {
         protected val REDIS_CONTAINER: GenericContainer<Nothing> = GenericContainer<Nothing>(REDIS_IMAGE)
             .apply { withExposedPorts(6379) }
             .apply { withReuse(true) }
+            .apply { start() }
+
+        @Container
+        @JvmStatic
+        val KAFKA_CONTAINER: KafkaContainer = KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"))
+            .withEmbeddedZookeeper()
+            .withStartupTimeout(Duration.ofMinutes(2))
             .apply { start() }
 
         @JvmStatic
@@ -37,6 +47,8 @@ abstract class TestContainer {
             registry.add("spring.datasource.password", MYSQL_CONTAINER::getPassword);
             registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost)
             registry.add("spring.data.redis.port", REDIS_CONTAINER::getFirstMappedPort)
+            registry.add("spring.kafka.producer.bootstrap-servers") { KAFKA_CONTAINER.bootstrapServers }
+            registry.add("spring.kafka.consumer.bootstrap-servers") { KAFKA_CONTAINER.bootstrapServers }
         }
     }
 }

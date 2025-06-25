@@ -2,11 +2,12 @@ spring:
   config:
     activate:
       on-profile: docker
+    import: optional:file:.env[.properties]
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ticketing
-    username: golf
-    password: 1234
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: create
@@ -17,13 +18,13 @@ spring:
     show-sql: true
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_SERVER}
+      port: ${REDIS_PORT}
   kafka:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      bootstrap-servers: localhost:9093
+      bootstrap-servers: ${KAFKA_SERVER}
       properties:
         security.protocol: PLAINTEXT
         # 클라이언트 설정 세부화
@@ -33,3 +34,18 @@ spring:
         retry.backoff.ms: 1000             # 재시도 간격
         request.timeout.ms: 30000          # 요청 타임아웃
         connections.max.idle.ms: 540000    # 연결 유지 시간
+  mail:
+    host: smtp.naver.com
+    username: ${OWNER_EMAIL}
+    password: ${OWNER_PASSWORD}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000

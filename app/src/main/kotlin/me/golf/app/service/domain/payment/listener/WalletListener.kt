@@ -9,10 +9,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
+import java.util.UUID
 
 @Component
 class WalletListener(
@@ -23,7 +22,6 @@ class WalletListener(
     private val log: Logger = LoggerFactory.getLogger(WalletListener::class.java)
 
     @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun onPayment(event: WalletEventMessage) {
         log.info("결제 완료 -> 정산 정보 입력 이벤트 전송 paymentId : {}", event.paymentId)
@@ -34,6 +32,14 @@ class WalletListener(
         )
 
         paymentEventRepository.save(paymentEvent)
-        walletMessageSender.send(event.paymentId, event.userId)
+        sendWalletMessage(event)
+    }
+    
+    private fun sendWalletMessage(event: WalletEventMessage) {
+        val traceId: UUID = UUID.randomUUID()
+        log.info("정산 정보 입력 메시지 전송 성공 paymentId: {}, traceId: {}", event.paymentId, traceId)
+        val result = kotlin.runCatching { walletMessageSender.send(event.paymentId, event.userId, traceId.toString()) }
+
+        result.onFailure { log.error("정산 정보 입력 메시지 전송 실패 paymentId: {}, traceId: {}", event.paymentId, traceId, it) }
     }
 }

@@ -1,0 +1,29 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    show-sql: true
+  mail:
+    host: smtp.naver.com
+    username: #{test 용 이메일을 넣어주세요}
+    password: #{test 용 비밀번호를 넣어주세요}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 3000
+          timeout: 3000
+          writetimeout: 5000
+
+toss:
+  secret-key: dGVzdF9nc2tfZG9jc19PYVB6OEw1S2RtUVhrelJ6M3k0N0JNdzY6Cg==
+  host: https://api.tosspayments.com
