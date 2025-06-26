@@ -1,5 +1,6 @@
 package me.golf.infra.sender
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import me.golf.core.sender.domain.wallet.WalletMessageSender
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component
 @Profile("!test")
 class WalletKafkaMessageSender(
     private val kafkaTemplate: KafkaTemplate<String, String>,
+    private val objectMapper: ObjectMapper,
     private val emailSender: EmailSender
 ) : WalletMessageSender {
 
@@ -30,6 +32,8 @@ class WalletKafkaMessageSender(
                 )
             }
     }
+
+    private fun WalletPayload.toJson() = objectMapper.writeValueAsString(this)
 
     private fun handleKafkaResult(
         result: SendResult<String, String>?,

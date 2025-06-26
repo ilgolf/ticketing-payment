@@ -1,6 +1,7 @@
 package me.golf.infra.sender
 
 import me.golf.infra.config.MailProperties
+import org.slf4j.LoggerFactory
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.scheduling.annotation.Async
@@ -17,22 +18,24 @@ internal class EmailSenderImpl(
     private val mailProperties: MailProperties
 ) : EmailSender {
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     @Async
     override fun send(paymentId: Long, userId: Long, traceId: String) {
-        val content = EMAIL_TEMPLATE.trimIndent().format(paymentId, userId, traceId)
+        val result = kotlin.runCatching {
+            val content = EMAIL_TEMPLATE.trimIndent().format(paymentId, userId, traceId)
+            val message = javaMailSender.createMimeMessage()
+            val helper = MimeMessageHelper(message, true, "UTF-8")
 
-        println("username: ${mailProperties.username}")
-        println("password: ${mailProperties.password}")
+            helper.setFrom(mailProperties.username)
+            helper.setTo(ADMIN_EMAIL)
+            helper.setSubject(EMAIL_TITLE)
+            helper.setText(content, true)
 
-        val message = javaMailSender.createMimeMessage()
-        val helper = MimeMessageHelper(message, true, "UTF-8")
+            javaMailSender.send(message)
+        }
 
-        helper.setFrom(mailProperties.username)
-        helper.setTo(ADMIN_EMAIL)
-        helper.setSubject(EMAIL_TITLE)
-        helper.setText(content, true)
-
-        javaMailSender.send(message)
+        result.onFailure { log.error("이메일 발송 실패 - paymentId: {}, userId: {}, traceId: {}", paymentId, userId, traceId, it) }
     }
 
     companion object {
