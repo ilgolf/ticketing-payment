@@ -1,26 +1,53 @@
 package me.golf.infra.sender
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import me.golf.core.sender.domain.wallet.WalletMessageSender
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.support.SendResult
 import org.springframework.stereotype.Component
 
 @Component
 @Profile("!test")
 class WalletKafkaMessageSender(
-    private val kafkaTemplate: KafkaTemplate<String, String>
+    private val kafkaTemplate: KafkaTemplate<String, String>,
+    private val objectMapper: ObjectMapper,
+    private val emailSender: EmailSender
 ) : WalletMessageSender {
 
-    override fun send(paymentId: Long, userId: Long) {
-        val payload =
-            """
-            {
-                "paymentId": $paymentId,
-                "userId": $userId
-            }
-            """.trimIndent()
+    private val log = LoggerFactory.getLogger(javaClass)
 
-        kafkaTemplate.send(WALLET_TOPIC, payload)
+    override fun send(paymentId: Long, userId: Long, traceId: String) {
+        val payload = WalletPayload(paymentId, userId)
+
+        kafkaTemplate.send(WALLET_TOPIC, payload.toJson())
+            .whenComplete { result, ex ->
+                handleKafkaResult(
+                    result = result,
+                    ex = ex,
+                    paymentId = paymentId,
+                    userId = userId,
+                    traceId = traceId
+                )
+            }
+    }
+
+    private fun WalletPayload.toJson() = objectMapper.writeValueAsString(this)
+
+    private fun handleKafkaResult(
+        result: SendResult<String, String>?,
+        ex: Throwable?,
+        paymentId: Long,
+        userId: Long,
+        traceId: String
+    ) {
+        if (ex != null) {
+            log.error("❌wallet 이벤트 처리 실패 paymentId: {}, traceId: {}", paymentId, traceId)
+            emailSender.send(paymentId, userId, traceId)
+            return
+        }
+        log.info("✅ Kafka 성공: ${result?.recordMetadata?.offset()}")
     }
 
     companion object {
@@ -30,7 +57,7 @@ class WalletKafkaMessageSender(
 
 @Component
 @Profile("test")
-internal class WalletDefaultMessageSender() : WalletMessageSender {
+internal class WalletDefaultMessageSender : WalletMessageSender {
 
-    override fun send(paymentId: Long, userId: Long) {}
+    override fun send(paymentId: Long, userId: Long, traceId: String) {}
 }
