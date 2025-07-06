@@ -1,5 +1,6 @@
 package me.golf.app.service.domain.order
 
+import me.golf.app.service.domain.stock.listener.dto.CheckoutSuccessEvent
 import me.golf.app.service.domain.stock.listener.dto.OrderFailEvent
 import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.payment.Payment
@@ -29,54 +30,61 @@ class CheckoutService(
 
     @Transactional
     override fun checkout(message: CheckoutRequestMessage): CheckoutCompleteResponseMessage {
-        eventPublisher.publishEvent(OrderFailEvent(message.orderId))
+        val order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
+        val tickets = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
 
-        val order: Order = orderRepository.findByIdAndUserId(message.orderId, message.userId)
-        val tickets: List<Ticket> = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
+        kotlin.runCatching { validateTickets(tickets, message) }
+            .onFailure { publishFailureEventAndThrow(message, it) }
 
-        validationTickets(tickets, message)
-
-        // 선점 한 적이 있는지 확인
-        if (stockRepository.existsReserveByOrderId(message.orderId)) {
-            stockRepository.updateTtl(message.orderId)
-        } else {
-            val reserveStock = stockRepository.reserveStock(message.orderId, tickets.map { it.id })
-
-            if (!reserveStock) {
-                throw IllegalArgumentException("상품 선점에 실패했습니다.")
-            }
-        }
-
-        order.payment?.let { return CheckoutCompleteResponseMessage(order.orderId, order.amount, it.idempotentKey) }
-
-        // create payment
-        val payment = createPayment(order, message.paymentMethod)
-        paymentRepository.save(payment, order)
-
+        eventPublisher.publishEvent(CheckoutSuccessEvent(order.orderId, tickets.map { it.id }))
+        
+        val payment = order.payment ?: createAndSaveNewPayment(order, message.paymentMethod)
+        
         return CheckoutCompleteResponseMessage(order.orderId, order.amount, payment.idempotentKey)
     }
 
-    private fun validationTickets(tickets: List<Ticket>, message: CheckoutRequestMessage) {
+    private fun validateTickets(tickets: List<Ticket>, message: CheckoutRequestMessage) {
+        validateTicketsExist(tickets)
+        validateTicketsPurchasable(tickets)
+        validateTicketsNotAlreadyReserved(tickets.map { it.id }, message.orderId)
+    }
+
+    private fun validateTicketsExist(tickets: List<Ticket>) {
         if (tickets.isEmpty()) {
             throw IllegalArgumentException("주문 티켓이 존재하지 않습니다.")
         }
+    }
 
+    private fun validateTicketsPurchasable(tickets: List<Ticket>) {
         if (tickets.any { it.isNonPurchase() }) {
             throw IllegalArgumentException("구매할 수 없는 주문 상태입니다.")
         }
+    }
 
-        if (stockRepository.alreadyReserveByTicketIds(message.orderId, tickets.map { it.id })) {
+    private fun validateTicketsNotAlreadyReserved(ticketIds: List<Long>, orderId: String) {
+        if (stockRepository.alreadyReserveByTicketIds(orderId, ticketIds)) {
             throw IllegalArgumentException("이미 선점 중인 상품입니다.")
         }
     }
 
-    private fun createPayment(order: Order, paymentMethod: PaymentMethod) =
-        Payment.create(
-            amount = order.amount,
-            userId = order.userId,
+    private fun publishFailureEventAndThrow(message: CheckoutRequestMessage, exception: Throwable): Nothing {
+        eventPublisher.publishEvent(OrderFailEvent(message.orderId))
+        throw exception
+    }
+
+    private fun createAndSaveNewPayment(order: Order, paymentMethod: PaymentMethod): Payment {
+        val payment = order.createPayment(paymentMethod)
+        return paymentRepository.save(payment, order)
+    }
+
+    private fun Order.createPayment(paymentMethod: PaymentMethod): Payment {
+        return Payment.create(
+            amount = this.amount,
+            userId = this.userId,
             idempotentKey = "",
             paymentMethod = paymentMethod,
             paymentStatus = PaymentStatus.PENDING,
             paymentDate = LocalDateTime.now(),
         )
+    }
 }

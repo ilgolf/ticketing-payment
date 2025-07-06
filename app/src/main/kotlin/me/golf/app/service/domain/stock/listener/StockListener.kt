@@ -1,5 +1,6 @@
 package me.golf.app.service.domain.stock.listener
 
+import me.golf.app.service.domain.stock.listener.dto.CheckoutSuccessEvent
 import me.golf.app.service.domain.stock.listener.dto.OrderCompleteEvent
 import me.golf.app.service.domain.stock.listener.dto.OrderFailEvent
 import me.golf.app.service.domain.stock.listener.dto.PaymentSuccessEvent
@@ -27,7 +28,34 @@ class StockListener(
         val result = kotlin.runCatching { stockRepository.reserveStock(orderId = event.orderId, itemIds = event.ticketIds) }
 
         result.onFailure {
-            log.error("주문 ID : {}, 선점 실패 사유 : {}", event.orderId, it.message)
+            log.info("주문 ID : {}, 선점 실패 사유 : {}", event.orderId, it.message)
+        }
+    }
+
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    fun handleStockReservation(event: CheckoutSuccessEvent) {
+        log.info("선점 정보 갱신 시작 : 주문 ID : {}", event.orderId)
+
+        kotlin.runCatching { updateStockReservationProcess(event) }
+            .onFailure { log.info("선점 실패 : {}", event.orderId) }
+    }
+
+    private fun updateStockReservationProcess(event: CheckoutSuccessEvent) {
+        if (stockRepository.existsReserveByOrderId(event.orderId)) {
+            stockRepository.updateTtl(event.orderId)
+            return
+        }
+
+        retryReserveStock(event.orderId, event.ticketIds)
+    }
+
+    private fun retryReserveStock(orderId: String, ticketIds: List<Long>) {
+        val reserveResult = stockRepository.reserveStock(orderId, ticketIds)
+
+        if (!reserveResult) {
+            throw IllegalArgumentException("상품 선점에 실패했습니다.")
         }
     }
 
@@ -39,7 +67,7 @@ class StockListener(
         val result = kotlin.runCatching { stockRepository.cancelReserve(event.orderId) }
 
         result.onFailure {
-            log.error("주문 ID : {} 선점 종료 실패 사유 : {}", event.orderId, it.message)
+            log.info("주문 ID : {} 선점 종료 실패 사유 : {}", event.orderId, it.message)
         }
     }
 
@@ -51,7 +79,7 @@ class StockListener(
         val result = kotlin.runCatching { stockRepository.cancelReserve(event.orderId) }
 
         result.onFailure {
-            log.error("주문 ID : {} 선점 실패 사유: {}", event.orderId, it.message)
+            log.info("주문 ID : {} 선점 실패 사유: {}", event.orderId, it.message)
         }
     }
 }
