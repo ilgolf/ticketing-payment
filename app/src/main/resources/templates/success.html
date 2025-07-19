@@ -24,7 +24,7 @@
             amount: amount,
         };
 
-        const response = await fetch("/payment", {
+        const response = await fetch("/api/v1/payments", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

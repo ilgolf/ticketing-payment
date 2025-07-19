@@ -12,3 +12,13 @@ fun PaymentEvent.toEntity() = PaymentEventEntity(
     processedAt = this.processedAt,
     errorMessage = this.errorMessage,
 )
+
+fun PaymentEventEntity.toModel() = PaymentEvent.create(
+    eventId = this.eventId,
+    paymentId = this.paymentId,
+    eventType = this.eventType,
+    eventStatus = this.eventStatus,
+    occurredAt = this.occurredAt,
+    processedAt = this.processedAt,
+    errorMessage = this.errorMessage,
+)
