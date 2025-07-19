@@ -47,8 +47,8 @@ class PaymentRepositoryImpl(
         val paymentEntity = paymentJpaDao.findByOrderIdAndUserId(orderId, userId)
             ?: throw IllegalArgumentException("Payment with id $orderId not found")
 
-        val paymentEventEntity = (paymentEventJpaDao.findByIdOrNull(paymentEntity.id)
-            ?: throw IllegalArgumentException("payment Event wwith id ${paymentEntity.id} not found"))
+        val paymentEventEntity = paymentEventJpaDao.findByPaymentId(paymentEntity.id!!)
+            ?: throw IllegalArgumentException("payment Event with id ${paymentEntity.id} not found")
 
         return paymentEventEntity.toModel()
     }

@@ -32,7 +32,7 @@ internal class PaymentControllerImpl(
     }
 
     @PatchMapping("/event-status")
-    override fun changeEventStatus(request: UpdatePaymentEventStatusRequest): ResponseEntity<Void> {
+    override fun changeEventStatus(@Valid @RequestBody request: UpdatePaymentEventStatusRequest): ResponseEntity<Void> {
         useCase.changeEventStatus(request.toCommand())
         return ResponseEntity.ok().build()
     }

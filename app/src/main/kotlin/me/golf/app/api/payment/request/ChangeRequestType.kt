@@ -2,7 +2,7 @@ package me.golf.app.api.payment.request
 
 import me.golf.core.model.domain.payment.enumerate.EventStatus
 
-enum class ChangeType(
+enum class ChangeRequestType(
     val description: String,
 ) {
     SUCCESS("성공 요청"),
