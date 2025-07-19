@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import me.golf.infra.entity.BaseEntity
 
 @Entity
+@Table(name = "order_item")
 class OrderItemEntity(
 
     @Id

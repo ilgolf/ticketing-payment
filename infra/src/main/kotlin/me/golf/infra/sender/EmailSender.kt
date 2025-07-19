@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 interface EmailSender {
 
-    fun send(paymentId: Long, userId: Long, traceId: String)
+    fun send(orderId: String, userId: Long, traceId: String)
 }
 
 @Component
@@ -21,9 +21,9 @@ internal class EmailSenderImpl(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     @Async
-    override fun send(paymentId: Long, userId: Long, traceId: String) {
+    override fun send(orderId: String, userId: Long, traceId: String) {
         val result = kotlin.runCatching {
-            val content = EMAIL_TEMPLATE.trimIndent().format(paymentId, userId, traceId)
+            val content = EMAIL_TEMPLATE.trimIndent().format(orderId, userId, traceId)
             val message = javaMailSender.createMimeMessage()
             val helper = MimeMessageHelper(message, true, "UTF-8")
 
@@ -35,7 +35,7 @@ internal class EmailSenderImpl(
             javaMailSender.send(message)
         }
 
-        result.onFailure { log.error("이메일 발송 실패 - paymentId: {}, userId: {}, traceId: {}", paymentId, userId, traceId, it) }
+        result.onFailure { log.error("이메일 발송 실패 - paymentId: {}, userId: {}, traceId: {}", orderId, userId, traceId, it) }
     }
 
     companion object {

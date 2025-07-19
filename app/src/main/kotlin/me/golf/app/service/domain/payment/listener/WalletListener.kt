@@ -24,7 +24,7 @@ class WalletListener(
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun onPayment(event: WalletEventMessage) {
-        log.info("결제 완료 -> 정산 정보 입력 이벤트 전송 paymentId : {}", event.paymentId)
+        log.info("결제 완료 -> 정산 정보 입력 이벤트 전송 orderId : {}", event.orderId)
 
         val paymentEvent = PaymentEvent.create(
             paymentId = event.paymentId,
@@ -37,9 +37,9 @@ class WalletListener(
 
     private fun sendWalletMessage(event: WalletEventMessage) {
         val traceId: UUID = UUID.randomUUID()
-        log.info("정산 정보 입력 메시지 전송 시작 paymentId: {}, traceId: {}", event.paymentId, traceId)
-        val result = kotlin.runCatching { walletMessageSender.send(event.paymentId, event.userId, traceId.toString()) }
+        log.info("정산 정보 입력 메시지 전송 시작 orderId: {}, traceId: {}", event.paymentId, traceId)
+        val result = kotlin.runCatching { walletMessageSender.send(event.orderId, event.userId, traceId.toString()) }
 
-        result.onFailure { log.error("정산 정보 입력 메시지 전송 실패 paymentId: {}, traceId: {}", event.paymentId, traceId, it) }
+        result.onFailure { log.error("정산 정보 입력 메시지 전송 실패 orderId: {}, traceId: {}", event.paymentId, traceId, it) }
     }
 }

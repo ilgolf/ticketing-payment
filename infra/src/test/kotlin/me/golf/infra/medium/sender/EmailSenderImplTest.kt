@@ -15,15 +15,15 @@ class EmailSenderImplTest
     @Test
     @Disabled
     fun `수동 이메일 전송 테스트`() {
-        val paymentId = 1001L
+        val orderId = "${LocalDateTime.now()}-0001"
         val userId = 2002L
         val traceId = "manual-test-${LocalDateTime.now()}"
 
         try {
-            sut.send(paymentId, userId, traceId)
+            sut.send(orderId, userId, traceId)
         } catch (e: Exception) {
             println("❌ 이메일 전송 실패: ${e.message}")
-            e.printStackTrace()
+            throw e
         }
     }
 }

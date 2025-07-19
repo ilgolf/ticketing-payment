@@ -55,7 +55,7 @@ class PaymentService(
 
     private fun publishPaymentSuccessEvent(completePayment: Payment, order: Order) {
         // wallet event 발생
-        eventPublisher.publishEvent(WalletEventMessage(completePayment.id!!, order.userId))
+        eventPublisher.publishEvent(WalletEventMessage(order.orderId, completePayment.id!!, order.userId))
 
         // ledger event 발생
         eventPublisher.publishEvent(LedgerEventMessage(completePayment.id!!, order.userId))
