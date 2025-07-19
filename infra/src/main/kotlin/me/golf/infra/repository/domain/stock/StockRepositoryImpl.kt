@@ -10,7 +10,7 @@ class StockRepositoryImpl(
 ): StockRepository {
 
     override fun reserveStock(orderId: String, itemIds: Collection<Long>): Boolean {
-        return stockDao.saveOrderReserveInfo(orderId, itemIds, 20)
+        return stockDao.saveOrderReserveInfo(orderId, itemIds, 5)
     }
 
     override fun alreadyReserveByTicketIds(orderId: String, ticketIds: List<Long>): Boolean {

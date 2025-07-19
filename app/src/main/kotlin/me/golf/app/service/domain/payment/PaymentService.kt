@@ -5,7 +5,9 @@ import me.golf.app.service.domain.payment.listener.dto.LedgerEventMessage
 import me.golf.app.service.domain.payment.listener.dto.WalletEventMessage
 import me.golf.app.service.domain.stock.listener.dto.OrderFailEvent
 import me.golf.app.service.domain.stock.listener.dto.PaymentSuccessEvent
+import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.order.OrderState
+import me.golf.core.model.domain.payment.Payment
 import me.golf.core.repository.domain.item.TicketRepository
 import me.golf.core.repository.domain.order.OrderRepository
 import me.golf.core.repository.domain.payment.PaymentRepository
@@ -26,22 +28,32 @@ class PaymentService(
 
     @Transactional
     override fun payment(message: PaymentRequestMessage): PaymentResponseMessage {
-        eventPublisher.publishEvent(OrderFailEvent(message.orderId))
+        publishPaymentFailEvent(message)
 
         val order = orderRepository.findWithPaymentById(message.orderId)
-
         val payment = order.payment ?: throw IllegalArgumentException("payment must not be null")
         val completePayment = paymentRepository.confirm(payment.addIdempotentKey(message.paymentKey), order.orderId)
 
-        TransactionHelper.execute {
-            paymentRepository.update(completePayment, order.orderId)
+        TransactionHelper.execute { paymentPostProcess(completePayment, order) }
+        publishPaymentSuccessEvent(completePayment, order)
 
-            val tickets = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
+        return PaymentResponseMessage(paymentId = completePayment.id!!, paymentDate = completePayment.paymentDate)
+    }
 
-            orderRepository.save(order.changeState(OrderState.SUCCESS))
-            ticketRepository.saveAll(tickets.map { it.purchase() })
-        }
+    private fun publishPaymentFailEvent(message: PaymentRequestMessage) {
+        eventPublisher.publishEvent(OrderFailEvent(message.orderId))
+    }
 
+    private fun paymentPostProcess(completePayment: Payment, order: Order) {
+        paymentRepository.update(completePayment, order.orderId)
+
+        val tickets = ticketRepository.findAllByOrderId(order.orderItem.map { it.itemId })
+
+        orderRepository.save(order.changeState(OrderState.SUCCESS))
+        ticketRepository.saveAll(tickets.map { it.purchase() })
+    }
+
+    private fun publishPaymentSuccessEvent(completePayment: Payment, order: Order) {
         // wallet event 발생
         eventPublisher.publishEvent(WalletEventMessage(completePayment.id!!, order.userId))
 
@@ -50,7 +62,5 @@ class PaymentService(
 
         // 선점 해제 이벤트 발생
         eventPublisher.publishEvent(PaymentSuccessEvent(completePayment.id!!, order.orderId))
-
-        return PaymentResponseMessage(paymentId = completePayment.id!!, paymentDate = completePayment.paymentDate)
     }
 }
