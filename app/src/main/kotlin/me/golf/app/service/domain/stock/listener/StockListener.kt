@@ -55,6 +55,7 @@ class StockListener(
         val reserveResult = stockRepository.reserveStock(orderId, ticketIds)
 
         if (!reserveResult) {
+            log.error("상품 선점 실패 : 주문 번호: {}", orderId)
             throw IllegalArgumentException("상품 선점에 실패했습니다.")
         }
     }
