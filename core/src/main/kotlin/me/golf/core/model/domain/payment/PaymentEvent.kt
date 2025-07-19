@@ -13,6 +13,8 @@ interface PaymentEvent {
     val processedAt: LocalDateTime?
     val errorMessage: String?
 
+    fun changeEventStatus(eventStatus: EventStatus): PaymentEvent
+
     companion object {
         fun create(
             eventId: Long? = null,
@@ -44,6 +46,19 @@ class PaymentEventMutator(
     override var occurredAt: LocalDateTime,
     override var processedAt: LocalDateTime?,
     override var errorMessage: String?,
-) : PaymentEvent
+) : PaymentEvent {
+
+    override fun changeEventStatus(eventStatus: EventStatus): PaymentEvent {
+        return PaymentEventMutator(
+            eventId = this.eventId,
+            paymentId = this.paymentId,
+            eventType = this.eventType,
+            eventStatus = eventStatus,
+            occurredAt = this.occurredAt,
+            processedAt = this.processedAt,
+            errorMessage = this.errorMessage
+        )
+    }
+}
 
 

@@ -18,4 +18,6 @@ interface PaymentJpaDao: JpaRepository<PaymentEntity, Long> {
         @Param("orderId") orderId: String,
         @Param("paymentStatus") status: PaymentStatus
     ): PaymentEntity?
+
+    fun findByOrderIdAndUserId(orderId: String, userId: Long): PaymentEntity?
 }

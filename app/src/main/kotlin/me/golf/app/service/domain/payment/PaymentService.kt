@@ -8,11 +8,14 @@ import me.golf.app.service.domain.stock.listener.dto.PaymentSuccessEvent
 import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.order.OrderState
 import me.golf.core.model.domain.payment.Payment
+import me.golf.core.model.domain.payment.PaymentEvent
 import me.golf.core.repository.domain.item.TicketRepository
 import me.golf.core.repository.domain.order.OrderRepository
 import me.golf.core.repository.domain.payment.PaymentRepository
 import me.golf.core.usecase.domain.payment.PaymentUseCase
 import me.golf.core.usecase.domain.payment.request.PaymentRequestMessage
+import me.golf.core.usecase.domain.payment.request.UpdatePaymentEventStatusRequestMessage
+import me.golf.core.usecase.domain.payment.response.PaymentEventStatusResponseMessage
 import me.golf.core.usecase.domain.payment.response.PaymentResponseMessage
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
@@ -23,7 +26,7 @@ class PaymentService(
     private val orderRepository: OrderRepository,
     private val paymentRepository: PaymentRepository,
     private val ticketRepository: TicketRepository,
-    private val eventPublisher: ApplicationEventPublisher
+    private val eventPublisher: ApplicationEventPublisher,
 ): PaymentUseCase {
 
     @Transactional
@@ -62,5 +65,14 @@ class PaymentService(
 
         // 선점 해제 이벤트 발생
         eventPublisher.publishEvent(PaymentSuccessEvent(completePayment.id!!, order.orderId))
+    }
+
+    @Transactional
+    override fun changeEventStatus(message: UpdatePaymentEventStatusRequestMessage): PaymentEventStatusResponseMessage {
+        val paymentEvent: PaymentEvent = paymentRepository.findEventByOrderId(message.orderId, message.userId)
+        val updatedPaymentEvent = paymentEvent.changeEventStatus(message.eventStatus)
+        paymentRepository.updateEvent(updatedPaymentEvent)
+
+        return PaymentEventStatusResponseMessage(paymentId = updatedPaymentEvent.paymentId, paymentEventId = updatedPaymentEvent.eventId!!)
     }
 }

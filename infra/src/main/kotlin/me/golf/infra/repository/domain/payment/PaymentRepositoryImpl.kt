@@ -2,19 +2,23 @@ package me.golf.infra.repository.domain.payment
 
 import me.golf.core.model.domain.order.Order
 import me.golf.core.model.domain.payment.Payment
+import me.golf.core.model.domain.payment.PaymentEvent
 import me.golf.core.repository.domain.payment.PaymentRepository
 import me.golf.infra.client.PaymentClient
 import me.golf.infra.client.response.PaymentResponse
 import me.golf.infra.dao.domain.order.OrderJpaDao
+import me.golf.infra.dao.domain.payment.PaymentEventJpaDao
 import me.golf.infra.dao.domain.payment.PaymentJpaDao
 import me.golf.infra.entity.converter.toEntity
 import me.golf.infra.entity.converter.toModel
 import me.golf.infra.entity.domain.order.OrderEntity
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
 class PaymentRepositoryImpl(
     private val paymentJpaDao: PaymentJpaDao,
+    private val paymentEventJpaDao: PaymentEventJpaDao,
     private val orderJpaDao: OrderJpaDao,
     private val paymentClient: PaymentClient
 ) : PaymentRepository {
@@ -37,5 +41,19 @@ class PaymentRepositoryImpl(
 
     override fun update(payment: Payment, orderId: String): Payment {
         return paymentJpaDao.save(payment.toEntity(orderId)).toModel()
+    }
+
+    override fun findEventByOrderId(orderId: String, userId: Long): PaymentEvent {
+        val paymentEntity = paymentJpaDao.findByOrderIdAndUserId(orderId, userId)
+            ?: throw IllegalArgumentException("Payment with id $orderId not found")
+
+        val paymentEventEntity = paymentEventJpaDao.findByPaymentId(paymentEntity.id!!)
+            ?: throw IllegalArgumentException("payment Event with id ${paymentEntity.id} not found")
+
+        return paymentEventEntity.toModel()
+    }
+
+    override fun updateEvent(updatedPaymentEvent: PaymentEvent) {
+        paymentEventJpaDao.save(updatedPaymentEvent.toEntity())
     }
 }

@@ -9,6 +9,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
 import java.util.UUID
@@ -22,6 +24,7 @@ class WalletListener(
     private val log: Logger = LoggerFactory.getLogger(WalletListener::class.java)
 
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun onPayment(event: WalletEventMessage) {
         log.info("결제 완료 -> 정산 정보 입력 이벤트 전송 orderId : {}", event.orderId)
