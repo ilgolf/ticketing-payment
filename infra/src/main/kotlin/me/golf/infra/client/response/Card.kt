@@ -3,8 +3,9 @@ package me.golf.infra.client.response
 import java.math.BigDecimal
 
 data class Card(
+    val amount: BigDecimal,
     val issuerCode: String,
-    val acquirerCode: String,
+    val acquirerCode: String?,
     val number: String,
     val installmentPlanMonths: Int,
     val isInterestFree: Boolean,
@@ -14,6 +15,4 @@ data class Card(
     val cardType: String,
     val ownerType: String,
     val acquireStatus: String,
-    val receiptUrl: String,
-    val amount: BigDecimal
 )

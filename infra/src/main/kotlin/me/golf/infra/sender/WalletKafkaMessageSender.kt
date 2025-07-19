@@ -18,15 +18,15 @@ class WalletKafkaMessageSender(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun send(paymentId: Long, userId: Long, traceId: String) {
-        val payload = WalletPayload(paymentId, userId)
+    override fun send(orderId: String, userId: Long, traceId: String) {
+        val payload = WalletPayload(orderId, userId)
 
         kafkaTemplate.send(WALLET_TOPIC, payload.toJson())
             .whenComplete { result, ex ->
                 handleKafkaResult(
                     result = result,
                     ex = ex,
-                    paymentId = paymentId,
+                    orderId = orderId,
                     userId = userId,
                     traceId = traceId
                 )
@@ -38,13 +38,13 @@ class WalletKafkaMessageSender(
     private fun handleKafkaResult(
         result: SendResult<String, String>?,
         ex: Throwable?,
-        paymentId: Long,
+        orderId: String,
         userId: Long,
         traceId: String
     ) {
         if (ex != null) {
-            log.error("❌wallet 이벤트 처리 실패 paymentId: {}, traceId: {}", paymentId, traceId)
-            emailSender.send(paymentId, userId, traceId)
+            log.error("❌wallet 이벤트 처리 실패 paymentId: {}, traceId: {}", orderId, traceId)
+            emailSender.send(orderId, userId, traceId)
             return
         }
         log.info("✅ Kafka 성공: ${result?.recordMetadata?.offset()}")
@@ -59,5 +59,5 @@ class WalletKafkaMessageSender(
 @Profile("test")
 internal class WalletDefaultMessageSender : WalletMessageSender {
 
-    override fun send(paymentId: Long, userId: Long, traceId: String) {}
+    override fun send(orderId: String, userId: Long, traceId: String) {}
 }
