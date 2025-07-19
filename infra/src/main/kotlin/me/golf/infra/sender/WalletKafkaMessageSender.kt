@@ -43,7 +43,7 @@ class WalletKafkaMessageSender(
         traceId: String
     ) {
         if (ex != null) {
-            log.error("❌wallet 이벤트 처리 실패 paymentId: {}, traceId: {}", orderId, traceId)
+            log.error("❌wallet 이벤트 처리 실패 orderId: {}, traceId: {}", orderId, traceId)
             emailSender.send(orderId, userId, traceId)
             return
         }
