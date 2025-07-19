@@ -17,7 +17,6 @@ import me.golf.core.usecase.domain.payment.request.PaymentRequestMessage
 import me.golf.core.usecase.domain.payment.request.UpdatePaymentEventStatusRequestMessage
 import me.golf.core.usecase.domain.payment.response.PaymentEventStatusResponseMessage
 import me.golf.core.usecase.domain.payment.response.PaymentResponseMessage
-import me.golf.infra.dao.domain.payment.PaymentEventJpaDao
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
