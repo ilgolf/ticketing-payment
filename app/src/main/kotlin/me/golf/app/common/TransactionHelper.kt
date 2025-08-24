@@ -15,11 +15,7 @@ class TransactionHelper(
         private lateinit var transactionTemplate: TransactionTemplate
 
         fun <R> execute(block: () -> R) {
-            transactionTemplate.execute { status ->
-                kotlin.runCatching { block() }
-                    .onSuccess { status.isCompleted }
-                    .onFailure { status.setRollbackOnly() }
-            }
+            transactionTemplate.execute { block() }
         }
     }
 }
