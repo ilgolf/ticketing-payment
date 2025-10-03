@@ -29,7 +29,6 @@ class PaymentService(
     private val eventPublisher: ApplicationEventPublisher,
 ): PaymentUseCase {
 
-    @Transactional
     override fun payment(message: PaymentRequestMessage): PaymentResponseMessage {
         publishPaymentFailEvent(message)
 
@@ -37,8 +36,10 @@ class PaymentService(
         val payment = order.payment ?: throw IllegalArgumentException("payment must not be null")
         val completePayment = paymentRepository.confirm(payment.addIdempotentKey(message.paymentKey), order.orderId)
 
-        TransactionHelper.execute { paymentPostProcess(completePayment, order) }
-        publishPaymentSuccessEvent(completePayment, order)
+        TransactionHelper.execute {
+            paymentPostProcess(completePayment, order)
+            publishPaymentSuccessEvent(completePayment, order)
+        }
 
         return PaymentResponseMessage(paymentId = completePayment.id!!, paymentDate = completePayment.paymentDate)
     }
@@ -61,7 +62,7 @@ class PaymentService(
         eventPublisher.publishEvent(WalletEventMessage(order.orderId, completePayment.id!!, order.userId))
 
         // ledger event 발생
-        eventPublisher.publishEvent(LedgerEventMessage(completePayment.id!!, order.userId))
+        eventPublisher.publishEvent(LedgerEventMessage(order.orderId, completePayment.id!!, order.userId))
 
         // 선점 해제 이벤트 발생
         eventPublisher.publishEvent(PaymentSuccessEvent(completePayment.id!!, order.orderId))
