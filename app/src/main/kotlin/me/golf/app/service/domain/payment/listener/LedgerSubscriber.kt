@@ -39,6 +39,6 @@ class LedgerSubscriber(
 
         val result = kotlin.runCatching { ledgerMessageSender.send(event.orderId, event.userId, traceId.toString()) }
 
-        result.onFailure { log.error("원장 정보 입력 메시지 전송 실패 orderId: {}, traceId: {}", event.paymentId, traceId, it) }
+        result.onFailure { log.error("원장 정보 입력 메시지 전송 실패 orderId: {}, traceId: {}", event.orderId, traceId, it) }
     }
 }
