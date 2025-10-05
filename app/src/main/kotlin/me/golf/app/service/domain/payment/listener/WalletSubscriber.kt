@@ -16,12 +16,12 @@ import org.springframework.transaction.event.TransactionalEventListener
 import java.util.UUID
 
 @Component
-class WalletListener(
+class WalletSubscriber(
     private val walletMessageSender: WalletMessageSender,
     private val paymentEventRepository: PaymentEventRepository
 ) {
 
-    private val log: Logger = LoggerFactory.getLogger(WalletListener::class.java)
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -43,6 +43,6 @@ class WalletListener(
         log.info("정산 정보 입력 메시지 전송 시작 orderId: {}, traceId: {}", event.paymentId, traceId)
         val result = kotlin.runCatching { walletMessageSender.send(event.orderId, event.userId, traceId.toString()) }
 
-        result.onFailure { log.error("정산 정보 입력 메시지 전송 실패 orderId: {}, traceId: {}", event.paymentId, traceId, it) }
+        result.onFailure { log.error("정산 정보 입력 메시지 전송 실패 orderId: {}, traceId: {}", event.orderId, traceId, it) }
     }
 }
