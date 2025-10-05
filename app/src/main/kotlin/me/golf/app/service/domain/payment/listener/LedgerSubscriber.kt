@@ -7,7 +7,10 @@ import me.golf.core.repository.domain.payment.PaymentEventRepository
 import me.golf.core.sender.domain.ledger.LedgerMessageSender
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
 import java.util.*
@@ -19,9 +22,11 @@ class LedgerSubscriber(
 ) {
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun handleSuccessPaymentEvent(event: LedgerEventMessage) {
-        log.info("결제 완료 원장 정보 저장 Event: {}", event.paymentId)
+        log.info("결제 완료 원장 정보 저장 Event orderId: {}, paymentId: {}", event.orderId, event.paymentId)
 
         val paymentEvent = PaymentEvent.create(
             paymentId = event.paymentId,
