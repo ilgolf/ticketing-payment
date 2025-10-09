@@ -23,8 +23,6 @@ interface PaymentClient {
 @Component
 @Profile("test")
 internal class DefaultPaymentClient : PaymentClient {
-    private val log = LoggerFactory.getLogger(PaymentClient::class.java)
-
     override fun payment(payment: Payment, orderId: String): PaymentResponse {
         log.info("Testing payment for order $orderId")
 
@@ -45,6 +43,10 @@ internal class DefaultPaymentClient : PaymentClient {
             amount = BigDecimal(1_000_000),
         )
     }
+
+    companion object {
+        private val log = LoggerFactory.getLogger(PaymentClient::class.java)
+    }
 }
 
 @Component
@@ -53,8 +55,6 @@ internal class TossPaymentClient(
     private val tossPaymentRestClient: RestClient,
     private val objectMapper: ObjectMapper,
 ) : PaymentClient {
-
-    private val log = LoggerFactory.getLogger(TossPaymentClient::class.java)
 
     override fun payment(payment: Payment, orderId: String): PaymentResponse {
         val requestBody = TossPaymentRequestBody(
@@ -81,6 +81,7 @@ internal class TossPaymentClient(
     }
 
     companion object {
+        private val log = LoggerFactory.getLogger(TossPaymentClient::class.java)
         const val CONFIRM_END_POINT = "/v1/payments/confirm"
     }
 }

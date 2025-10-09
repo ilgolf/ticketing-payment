@@ -18,8 +18,6 @@ internal class EmailSenderImpl(
     private val mailProperties: MailProperties
 ) : EmailSender {
 
-    private val log = LoggerFactory.getLogger(this::class.java)
-
     @Async
     override fun send(orderId: String, userId: Long, traceId: String) {
         val result = kotlin.runCatching {
@@ -39,9 +37,10 @@ internal class EmailSenderImpl(
     }
 
     companion object {
-        const val ADMIN_EMAIL = "junghn6768@gmail.com"
-        const val EMAIL_TITLE = "kafka 이벤트 처리 실패 메일입니다."
-        const val EMAIL_TEMPLATE = """
+        private val log = LoggerFactory.getLogger(this::class.java)
+        private const val ADMIN_EMAIL = "junghn6768@gmail.com"
+        private const val EMAIL_TITLE = "kafka 이벤트 처리 실패 메일입니다."
+        private const val EMAIL_TEMPLATE = """
             결제 이벤트 처리 실패 Message Queue와 실패한 요청 건을 빨리 확인해주세요.
             paymentId: %d
             userId: %d
