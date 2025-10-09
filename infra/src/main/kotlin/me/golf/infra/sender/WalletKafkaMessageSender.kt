@@ -16,8 +16,6 @@ class WalletKafkaMessageSender(
     private val emailSender: EmailSender
 ) : WalletMessageSender {
 
-    private val log = LoggerFactory.getLogger(javaClass)
-
     override fun send(orderId: String, userId: Long, traceId: String) {
         val payload = WalletPayload(orderId, userId)
 
@@ -51,6 +49,7 @@ class WalletKafkaMessageSender(
     }
 
     companion object {
+        private val log = LoggerFactory.getLogger(WalletKafkaMessageSender::class.java)
         private const val WALLET_TOPIC = "wallet"
     }
 }
