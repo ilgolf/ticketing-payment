@@ -49,7 +49,7 @@ class WalletKafkaMessageSender(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(this::class.java)
+        private val log = LoggerFactory.getLogger(WalletKafkaMessageSender::class.java)
         private const val WALLET_TOPIC = "wallet"
     }
 }

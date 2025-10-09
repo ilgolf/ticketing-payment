@@ -16,8 +16,6 @@ class LedgerKafkaMessageSender(
     private val objectMapper: ObjectMapper,
 ): LedgerMessageSender {
 
-    private val log: Logger = LoggerFactory.getLogger(this::class.java)
-
     override fun send(orderId: String, userId: Long, traceId: String) {
         val payload = LedgerPayload(orderId, userId)
 
@@ -52,6 +50,7 @@ class LedgerKafkaMessageSender(
     private fun LedgerPayload.toJson() = objectMapper.writeValueAsString(this)
 
     companion object {
+        private val log: Logger = LoggerFactory.getLogger(LedgerKafkaMessageSender::class.java)
         private const val LEDGER_TOPIC = "ledger"
     }
 }

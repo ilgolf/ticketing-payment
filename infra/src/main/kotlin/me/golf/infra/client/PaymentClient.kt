@@ -45,7 +45,7 @@ internal class DefaultPaymentClient : PaymentClient {
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(PaymentClient::class.java)
+        private val log = LoggerFactory.getLogger(DefaultPaymentClient::class.java)
     }
 }
 
