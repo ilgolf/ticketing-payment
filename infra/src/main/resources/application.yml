@@ -48,4 +48,4 @@ spring:
           timeout: 3000
           writetimeout: 5000
 super-user:
-  email: 'junghn6768@gmail.com'
+  email: ${ADMIN_EMAIL}
