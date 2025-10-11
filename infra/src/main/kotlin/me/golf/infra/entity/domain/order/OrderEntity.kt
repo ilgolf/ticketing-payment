@@ -1,10 +1,8 @@
 package me.golf.infra.entity.domain.order
 
 import jakarta.persistence.*
-import me.golf.core.model.domain.order.OrderState
 import me.golf.infra.entity.BaseEntity
 import java.math.BigDecimal
-import java.time.Instant
 import java.time.LocalDateTime
 
 @Entity

@@ -1,7 +1,6 @@
 package me.golf.infra.entity.domain.ticket
 
 import jakarta.persistence.*
-import me.golf.core.model.domain.ticket.TicketStatus
 import me.golf.infra.entity.BaseEntity
 import java.math.BigDecimal
 import java.time.LocalDateTime

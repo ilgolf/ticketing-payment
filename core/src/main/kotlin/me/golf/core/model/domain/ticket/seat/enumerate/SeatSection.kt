@@ -1,4 +1,4 @@
-package me.golf.core.model.domain.ticket.seat
+package me.golf.core.model.domain.ticket.seat.enumerate
 
 enum class SeatSection(
     val serializableValue: String,

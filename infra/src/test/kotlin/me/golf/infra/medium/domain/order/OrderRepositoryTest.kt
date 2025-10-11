@@ -1,14 +1,13 @@
 package me.golf.infra.medium.domain.order
 
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.order.OrderItem
+import me.golf.core.model.domain.order.orderitem.OrderItem
 import me.golf.core.model.domain.payment.Payment
 import me.golf.core.repository.domain.order.OrderRepository
 import me.golf.infra.dao.domain.order.OrderItemJpaDao
 import me.golf.infra.dao.domain.order.OrderJpaDao
 import me.golf.infra.dao.domain.payment.PaymentJpaDao
 import me.golf.infra.medium.DataJpaTestModule
-import me.golf.infra.medium.util.OrderFactory
 import me.golf.infra.medium.util.TicketFactory
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired

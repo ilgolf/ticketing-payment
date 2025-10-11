@@ -1,8 +1,8 @@
 package me.golf.infra.entity.converter
 
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.order.OrderItem
-import me.golf.core.model.domain.order.OrderState
+import me.golf.core.model.domain.order.orderitem.OrderItem
+import me.golf.core.model.domain.order.enumerate.OrderState
 import me.golf.core.model.domain.payment.Payment
 import me.golf.infra.entity.domain.order.OrderEntity
 import me.golf.infra.entity.domain.order.OrderItemEntity

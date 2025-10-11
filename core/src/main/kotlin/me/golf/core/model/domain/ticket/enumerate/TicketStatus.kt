@@ -1,4 +1,4 @@
-package me.golf.core.model.domain.ticket
+package me.golf.core.model.domain.ticket.enumerate
 
 enum class TicketStatus(
     private val serializableValue: String,

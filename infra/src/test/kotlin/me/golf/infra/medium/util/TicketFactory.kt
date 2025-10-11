@@ -5,7 +5,7 @@ import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import me.golf.core.model.domain.ticket.Ticket
 import me.golf.core.model.domain.ticket.TicketMutator
-import me.golf.core.model.domain.ticket.TicketStatus
+import me.golf.core.model.domain.ticket.enumerate.TicketStatus
 import me.golf.core.model.domain.ticket.seat.SeatMutator
 import java.math.BigDecimal
 import java.time.LocalDateTime

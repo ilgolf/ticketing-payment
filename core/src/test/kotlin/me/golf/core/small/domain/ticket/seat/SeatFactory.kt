@@ -1,7 +1,7 @@
 package me.golf.core.small.domain.ticket.seat
 
 import me.golf.core.model.domain.ticket.seat.Seat
-import me.golf.core.model.domain.ticket.seat.SeatSection
+import me.golf.core.model.domain.ticket.seat.enumerate.SeatSection
 
 object SeatFactory {
 

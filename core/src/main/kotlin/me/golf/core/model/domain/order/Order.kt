@@ -1,5 +1,7 @@
 package me.golf.core.model.domain.order
 
+import me.golf.core.model.domain.order.enumerate.OrderState
+import me.golf.core.model.domain.order.orderitem.OrderItem
 import me.golf.core.model.domain.payment.Payment
 import me.golf.core.model.domain.ticket.Ticket
 import java.math.BigDecimal

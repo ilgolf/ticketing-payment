@@ -4,7 +4,7 @@ import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.order.OrderItem
+import me.golf.core.model.domain.order.orderitem.OrderItem
 import me.golf.core.model.domain.order.OrderMutator
 import java.math.BigDecimal
 

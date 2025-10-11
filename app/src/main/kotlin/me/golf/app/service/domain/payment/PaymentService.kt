@@ -6,7 +6,7 @@ import me.golf.app.service.domain.payment.listener.dto.WalletEventMessage
 import me.golf.app.service.domain.stock.listener.dto.OrderFailEvent
 import me.golf.app.service.domain.stock.listener.dto.PaymentSuccessEvent
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.order.OrderState
+import me.golf.core.model.domain.order.enumerate.OrderState
 import me.golf.core.model.domain.payment.Payment
 import me.golf.core.model.domain.payment.PaymentEvent
 import me.golf.core.repository.domain.item.TicketRepository

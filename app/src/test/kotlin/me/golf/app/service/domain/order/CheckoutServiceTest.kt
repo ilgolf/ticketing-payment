@@ -4,11 +4,11 @@ import io.kotest.matchers.shouldBe
 import me.golf.app.service.domain.payment.PaymentFactory
 import me.golf.app.service.domain.ticket.TicketFactory
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.order.OrderItem
+import me.golf.core.model.domain.order.orderitem.OrderItem
 import me.golf.core.model.domain.order.OrderMutator
 import me.golf.core.model.domain.payment.enumerate.PaymentMethod
 import me.golf.core.model.domain.payment.PaymentMutator
-import me.golf.core.model.domain.ticket.TicketStatus
+import me.golf.core.model.domain.ticket.enumerate.TicketStatus
 import me.golf.core.repository.domain.item.TicketRepository
 import me.golf.core.repository.domain.order.OrderRepository
 import me.golf.core.repository.domain.payment.PaymentRepository
