@@ -1,0 +1,9 @@
+spring:
+  config:
+    import: file:${CONFIG_PATH:./infra/src/main/resources/application.yml}
+  profiles:
+    active: docker
+
+toss:
+  secret-key: ${TOSS_SECRET}
+  host: ${TOSS_HOST}

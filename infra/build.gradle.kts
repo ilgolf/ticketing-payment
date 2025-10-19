@@ -20,6 +20,8 @@ dependencies {
     implementation(project(":common-libs"))
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("com.linecorp.kotlin-jdsl:jpql-dsl:3.5.7")
+    implementation("com.linecorp.kotlin-jdsl:jpql-render:3.5.7")
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
@@ -29,7 +31,7 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:kafka")
     testImplementation("org.testcontainers:mysql")
-    testImplementation("org.testcontainers:redis")
+    testImplementation("com.redis.testcontainers:testcontainers-redis:1.6.4")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
