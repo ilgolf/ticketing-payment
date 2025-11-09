@@ -1,14 +1,11 @@
 package me.golf.core.small.domain.ticket.model
 
-import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
 import me.golf.core.model.domain.ticket.Ticket
-import me.golf.core.model.domain.ticket.TicketStatus
+import me.golf.core.model.domain.ticket.enumerate.TicketStatus
 import me.golf.core.model.domain.ticket.seat.Seat
 import me.golf.core.small.domain.ticket.TicketFactory
 import me.golf.core.small.domain.ticket.seat.SeatFactory
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.*
 import java.math.BigDecimal

@@ -1,5 +1,7 @@
 package me.golf.core.model.domain.ticket.seat
 
+import me.golf.core.model.domain.ticket.seat.enumerate.SeatSection
+
 interface Seat {
 
     /**

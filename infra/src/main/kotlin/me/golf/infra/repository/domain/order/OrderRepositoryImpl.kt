@@ -8,6 +8,7 @@ import me.golf.infra.dao.domain.order.OrderJpaDao
 import me.golf.infra.dao.domain.payment.PaymentJpaDao
 import me.golf.infra.entity.converter.toEntity
 import me.golf.infra.entity.converter.toModel
+import me.golf.infra.entity.domain.order.OrderEntity
 import me.golf.infra.entity.domain.order.OrderItemEntity
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Repository
 class OrderRepositoryImpl(
     private val orderJpaDao: OrderJpaDao,
     private val orderItemJpaDao: OrderItemJpaDao,
-    private val paymentJpaDao: PaymentJpaDao
+    private val paymentJpaDao: PaymentJpaDao,
 ) : OrderRepository {
 
     override fun save(order: Order): Order {
@@ -46,5 +47,10 @@ class OrderRepositoryImpl(
         val payment = paymentEntity.toModel()
 
         return orderEntity.toModel(payment = payment, orderItems = orderItems.map { it.toModel() })
+    }
+
+    override fun findByPaymentId(paymentIds: List<Long>): List<Order> {
+        val order: List<OrderEntity> = orderJpaDao.findByPaymentIdsIn(paymentIds)
+        return order.map { it.toModel(orderItems = emptyList()) }
     }
 }

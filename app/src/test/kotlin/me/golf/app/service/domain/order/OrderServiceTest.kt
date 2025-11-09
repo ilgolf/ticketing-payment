@@ -1,21 +1,18 @@
 package me.golf.app.service.domain.order
 
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.throwable.shouldHaveMessage
 import me.golf.app.service.domain.ticket.TicketFactory
-import me.golf.core.model.domain.order.OrderItem
-import me.golf.core.model.domain.ticket.TicketStatus
+import me.golf.core.model.domain.order.orderitem.OrderItem
+import me.golf.core.model.domain.ticket.enumerate.TicketStatus
 import me.golf.core.repository.domain.item.TicketRepository
 import me.golf.core.repository.domain.order.OrderRepository
 import me.golf.core.repository.domain.stock.StockRepository
 import me.golf.infra.generator.OrderIdGenerator
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.anyList
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any

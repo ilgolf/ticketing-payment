@@ -1,4 +1,4 @@
-package me.golf.core.model.domain.order
+package me.golf.core.model.domain.order.enumerate
 
 enum class OrderState(
     val serializedValue: String,

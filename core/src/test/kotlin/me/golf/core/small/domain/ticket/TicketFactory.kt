@@ -1,7 +1,7 @@
 package me.golf.core.small.domain.ticket
 
 import me.golf.core.model.domain.ticket.Ticket
-import me.golf.core.model.domain.ticket.TicketStatus
+import me.golf.core.model.domain.ticket.enumerate.TicketStatus
 import me.golf.core.model.domain.ticket.seat.Seat
 import java.math.BigDecimal
 import java.time.LocalDateTime

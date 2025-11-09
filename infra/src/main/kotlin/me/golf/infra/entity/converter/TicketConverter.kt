@@ -1,9 +1,9 @@
 package me.golf.infra.entity.converter
 
 import me.golf.core.model.domain.ticket.Ticket
-import me.golf.core.model.domain.ticket.TicketStatus
+import me.golf.core.model.domain.ticket.enumerate.TicketStatus
 import me.golf.core.model.domain.ticket.seat.Seat
-import me.golf.core.model.domain.ticket.seat.SeatSection
+import me.golf.core.model.domain.ticket.seat.enumerate.SeatSection
 import me.golf.infra.entity.domain.ticket.SeatEntity
 import me.golf.infra.entity.domain.ticket.TicketEntity
 

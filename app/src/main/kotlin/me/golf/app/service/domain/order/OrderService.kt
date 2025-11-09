@@ -2,8 +2,6 @@ package me.golf.app.service.domain.order
 
 import me.golf.app.service.domain.stock.listener.dto.OrderCompleteEvent
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.order.OrderItem
-import me.golf.core.model.domain.order.OrderState
 import me.golf.core.model.domain.ticket.Ticket
 import me.golf.core.repository.domain.item.TicketRepository
 import me.golf.core.repository.domain.order.OrderRepository
@@ -14,7 +12,6 @@ import me.golf.infra.generator.OrderIdGenerator
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 
 @Service
 class OrderService(

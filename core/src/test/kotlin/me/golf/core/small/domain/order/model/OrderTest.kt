@@ -3,8 +3,8 @@ package me.golf.core.small.domain.order.model
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import me.golf.core.model.domain.order.Order
-import me.golf.core.model.domain.order.OrderItem
-import me.golf.core.model.domain.order.OrderState
+import me.golf.core.model.domain.order.orderitem.OrderItem
+import me.golf.core.model.domain.order.enumerate.OrderState
 import me.golf.core.model.domain.payment.Payment
 import me.golf.core.model.domain.payment.enumerate.PaymentMethod
 import me.golf.core.model.domain.payment.enumerate.PaymentStatus

@@ -4,5 +4,6 @@ package me.golf.core.model.domain.payment.enumerate
 enum class EventStatus {
     PENDING,    // 대기중
     COMPLETED,  // 완료
-    FAILED      // 실패
+    FAILED,      // 실패
+    RETRY,
 }
