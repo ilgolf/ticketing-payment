@@ -8,4 +8,5 @@ interface PaymentEventRepository {
 
     fun save(paymentEvent: PaymentEvent)
     fun findByStatusAndType(status: EventStatus, type: PaymentEventType): List<PaymentEvent>
+    fun saveAll(changeEventStatus: List<PaymentEvent>)
 }

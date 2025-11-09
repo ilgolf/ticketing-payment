@@ -22,4 +22,8 @@ class PaymentEventRepositoryImpl(
         return paymentEventJpaDao.findByEventStatusAndEventType(status, type)
             .map { it.toModel() }
     }
+
+    override fun saveAll(changeEventStatus: List<PaymentEvent>) {
+        paymentEventJpaDao.saveAll(changeEventStatus.map { it.toEntity() })
+    }
 }

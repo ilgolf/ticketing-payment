@@ -5,5 +5,4 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ComponentScan(basePackages = ["me.golf.infra"])
-class ShcedulerInfraConfig {
-}
+class SchedulerInfraConfig

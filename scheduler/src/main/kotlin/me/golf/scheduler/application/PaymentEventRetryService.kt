@@ -41,7 +41,12 @@ class PaymentEventRetryService(
     }
 
     private fun getOrders(type: PaymentEventType): List<Order> {
-        val paymentEvents: List<PaymentEvent> = paymentEventRepository.findByStatusAndType(status = EventStatus.FAILED, type = type)
+        val paymentEvents: List<PaymentEvent> =
+            paymentEventRepository.findByStatusAndType(status = EventStatus.FAILED, type = type)
+
+        val changeEventStatus = paymentEvents.map { it.changeEventStatus(EventStatus.RETRY) }
+        paymentEventRepository.saveAll(changeEventStatus)
+
         return orderRepository.findByPaymentId(paymentEvents.map { it.paymentId })
     }
 }
